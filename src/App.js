@@ -1,6 +1,5 @@
 import React from 'react';
 import styled, { keyframes } from 'styled-components';
-import { Link } from 'react-scroll';
 import Header from './components/Header';
 import SolarSystem from './components/SolarSystem';
 import AboutMe from './components/AboutMe';

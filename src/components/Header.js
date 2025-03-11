@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import styled, { keyframes } from 'styled-components';
 
 const float = keyframes`
@@ -252,15 +252,13 @@ const Constellation = styled.div`
 const Header = () => {
   const [stars, setStars] = useState([]);
   const [typewriterIndex, setTypewriterIndex] = useState(0);
-  
-  const typewriterTexts = [
-    "Hi, I'm Omari!",
-    "Explore My World of Code",
-    "Software-Engineering",
-    "Web-Development",
-    "Cybersecurity",
-    "+-/*="
-  ];
+
+  const typewriterTexts = useMemo(() => [
+    "Full Stack Developer",
+    "Software Engineer",
+    "Problem Solver",
+    "Tech Enthusiast"
+  ], []);
 
   useEffect(() => {
     const generateStars = () => {
@@ -290,7 +288,7 @@ const Header = () => {
     }, 2000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [stars]);
 
   useEffect(() => {
     const typewriterInterval = setInterval(() => {
@@ -298,7 +296,7 @@ const Header = () => {
     }, 6000); // Change text every 6 seconds
 
     return () => clearInterval(typewriterInterval);
-  }, []);
+  }, [typewriterTexts]);
 
   return (
     <HeaderContainer>

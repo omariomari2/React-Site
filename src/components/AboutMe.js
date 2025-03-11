@@ -22,15 +22,6 @@ const shimmer = keyframes`
   }
 `;
 
-const rotate = keyframes`
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-`;
-
 const AboutContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -96,13 +87,7 @@ const Education = styled.div`
       transparent
     );
     transform: translateX(-100%);
-    animation: shimmerEffect 3s infinite;
-  }
-  
-  @keyframes shimmerEffect {
-    100% {
-      transform: translateX(100%);
-    }
+    animation: ${shimmer} 3s infinite;
   }
 `;
 
@@ -152,54 +137,6 @@ const SkillTag = styled.span`
   &:hover::after {
     opacity: 1;
     transform: rotate(45deg) translate(50%, 50%);
-  }
-`;
-
-const ContactLinks = styled.div`
-  display: flex;
-  gap: 1.5rem;
-  margin-top: 1.5rem;
-  flex-wrap: wrap;
-  justify-content: center;
-`;
-
-const ContactLink = styled.a`
-  color: #fff;
-  text-decoration: none;
-  padding: 0.5rem 1rem;
-  border-radius: 20px;
-  background: rgba(65, 105, 225, 0.2);
-  border: 1px solid rgba(65, 105, 225, 0.3);
-  transition: all 0.3s ease;
-  animation: ${float} ${props => props.delay}s ease-in-out infinite;
-  position: relative;
-  overflow: hidden;
-  
-  &:hover {
-    background: rgba(65, 105, 225, 0.4);
-    transform: translateY(-5px);
-    border-color: rgba(65, 105, 225, 0.8);
-    box-shadow: 0 5px 15px rgba(65, 105, 225, 0.4);
-  }
-  
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(
-      90deg,
-      transparent,
-      rgba(255, 255, 255, 0.2),
-      transparent
-    );
-    transition: 0.5s;
-  }
-  
-  &:hover::before {
-    left: 100%;
   }
 `;
 
