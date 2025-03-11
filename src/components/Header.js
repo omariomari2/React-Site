@@ -13,17 +13,6 @@ const float = keyframes`
   }
 `;
 
-const twinkle = keyframes`
-  0%, 100% {
-    opacity: var(--base-opacity);
-    transform: scale(1);
-  }
-  50% {
-    opacity: 1;
-    transform: scale(1.2);
-  }
-`;
-
 const typewriter = keyframes`
   from { width: 0 }
   to { width: 100% }
@@ -214,43 +203,7 @@ const TypewriterText = styled.div`
   }
 `;
 
-const Star = styled.div`
-  position: absolute;
-  width: ${props => props.size}px;
-  height: ${props => props.size}px;
-  background: #fff;
-  border-radius: 50%;
-  top: ${props => props.top}%;
-  left: ${props => props.left}%;
-  opacity: var(--base-opacity);
-  animation: ${twinkle} ${props => props.duration}s ease-in-out infinite;
-  box-shadow: 0 0 ${props => props.size * 2}px rgba(255, 255, 255, 0.8);
-  z-index: 1;
-  
-  &::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: ${props => props.size * 3}px;
-    height: ${props => props.size * 3}px;
-    background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, transparent 70%);
-    transform: translate(-50%, -50%);
-    border-radius: 50%;
-  }
-`;
-
-const Constellation = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 1;
-`;
-
 const Header = () => {
-  const [stars, setStars] = useState([]);
   const [typewriterIndex, setTypewriterIndex] = useState(0);
 
   const typewriterTexts = useMemo(() => [
@@ -259,36 +212,6 @@ const Header = () => {
     "Problem Solver",
     "Tech Enthusiast"
   ], []);
-
-  useEffect(() => {
-    const generateStars = () => {
-      return Array.from({ length: 50 }, () => ({
-        id: Math.random(),
-        size: Math.random() * 3 + 1,
-        top: Math.random() * 100,
-        left: Math.random() * 100,
-        duration: Math.random() * 3 + 2,
-        baseOpacity: Math.random() * 0.5 + 0.3
-      }));
-    };
-
-    setStars(generateStars());
-
-    const interval = setInterval(() => {
-      const randomIndex = Math.floor(Math.random() * stars.length);
-      setStars(prevStars => {
-        const newStars = [...prevStars];
-        newStars[randomIndex] = {
-          ...newStars[randomIndex],
-          duration: Math.random() * 3 + 2,
-          baseOpacity: Math.random() * 0.5 + 0.3
-        };
-        return newStars;
-      });
-    }, 2000);
-
-    return () => clearInterval(interval);
-  }, [stars]);
 
   useEffect(() => {
     const typewriterInterval = setInterval(() => {
@@ -300,18 +223,6 @@ const Header = () => {
 
   return (
     <HeaderContainer>
-      <Constellation>
-        {stars.map(star => (
-          <Star
-            key={star.id}
-            size={star.size}
-            top={star.top}
-            left={star.left}
-            duration={star.duration}
-            style={{ '--base-opacity': star.baseOpacity }}
-          />
-        ))}
-      </Constellation>
       <ContentContainer>
         <WelcomeMessage>Welcome Into My Universe</WelcomeMessage>
         <TypewriterContainer>
