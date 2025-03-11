@@ -323,12 +323,12 @@ const Header = () => {
   const [isWaiting, setIsWaiting] = useState(false);
 
   const typewriterTexts = useMemo(() => [
-    "Hi!",
+    "Hi,",
     "I'm Bright!",
     "A Full Stack Developer",
     "A Software Engineer",
     "A Problem Solver",
-    "And a Huuuge Tech Enthusiast!",
+    "And a Huuuge Tech Enthusiast !",
     " ", 
     "+=I'm also/*hu;mam!!, +/-* Human!",
     "Very Human!! 👽"
