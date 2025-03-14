@@ -489,7 +489,8 @@ function SolarSystem() {
       size: 1.3,
       color: '#9C27B0',
       details: 'B.S. in Cybersecurity Defense Strategy/Policy at Grambling State University. Coursework: Data Structures, Cybersecurity Fundamentals, Operating Systems, Networks.',
-      tech: ['Data Structures', 'Operating Systems', 'Networks']
+      tech: ['Data Structures', 'Operating Systems', 'Networks'],
+      link: '#Contact'
     },
     { 
       id: 2,
