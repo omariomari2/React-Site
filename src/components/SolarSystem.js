@@ -574,7 +574,16 @@ function SolarSystem() {
       <InfoPanel show={activePlanet !== null}>
         {activePlanet && (
           <>
-            <InfoTitle>{activePlanet.name}</InfoTitle>
+            <InfoTitle>
+              <a 
+                href={activePlanet.link ? activePlanet.link : `#${activePlanet.name.toLowerCase()}`} 
+                style={{ color: 'inherit', textDecoration: 'none', transition: 'color 0.3s ease' }}
+                onMouseOver={(e) => e.target.style.color = activePlanet.color}
+                onMouseOut={(e) => e.target.style.color = 'inherit'}
+              >
+                {activePlanet.name}
+              </a>
+            </InfoTitle>
             <InfoDescription>{activePlanet.details}</InfoDescription>
             <div style={{ marginTop: '10px' }}>
               {activePlanet.tech.map((tech, index) => (
