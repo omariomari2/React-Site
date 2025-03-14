@@ -165,8 +165,8 @@ const ResumeButton = styled.a`
 
 const AboutMe = () => {
   const languages = ['Python', 'C', 'C++', 'JavaScript', 'TypeScript'];
-  const tools = ['Git/GitHub', 'Replit', 'Firebase', 'RESTFUL APIs', 'Netlify', 'React', 'Tailwind'];
-  const specialties = ['UI/UX Design', 'API Integration', 'Project Management', 'Vulnerability Assessment'];
+  const tools = ['Git/GitHub', 'Replit', 'Firebase', 'RESTFUL APIs', 'Netlify', 'React', 'Tailwind', 'Figma'];
+  const specialties = ['UI/UX Design', 'Web Design', 'API Integration', 'Project Management', 'Vulnerability Assessment'];
 
   return (
     <AboutContainer>
@@ -179,8 +179,12 @@ const AboutMe = () => {
             <p>Grambling State University — Grambling, LA, USA</p>
             <p>Bachelor of Science in Cybersecurity Defense Strategy/Policy</p>
             <p>Expected: May 2028</p><br></br>
-            <p>I am a dedicated Cybersecurity student at Grambling State University with a strong passion for securing web data and integrating software engineering principles into cybersecurity solutions. With proficiency in Python and JavaScript, I actively work on projects that enhance my technical expertise. My goal is to leverage my skills to create innovative cybersecurity solutions while mentoring and supporting underprivileged individuals in tech.</p>
-            <ResumeButton href="/owusuomaribright_resume.docx.pdf" target="_blank">
+            <p>I am a dedicated Cybersecurity student at Grambling State University with a strong passion for securing web data and integrating software engineering principles into cybersecurity solutions. 
+                With proficiency in Python and JavaScript, I actively work on projects that enhance my technical expertise. 
+                I have a strong affinity for web development, and I achieve excellent work done using TailwindCSS, Figma, and React!.
+                I also enjoy 3d rendering using Three.Js . Currently, I am seeking research, internships and other opportunities that will broaden my knowledge and professional network!. 
+                My long term goal however is to leverage my skills to create innovative cybersecurity solutions while mentoring and supporting underprivileged individuals in tech.</p>
+            <ResumeButton href="/owusu_omari_bright_uber_resume.docx" target="_blank">
               Resume
             </ResumeButton>
           </Education>
