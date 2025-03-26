@@ -184,7 +184,7 @@ const AboutMe = () => {
                 I have a strong affinity for web development, and I achieve excellent work done using TailwindCSS, Figma, and React!.
                 I also enjoy 3d rendering using Three.Js . <br /><br />Currently, I am seeking research, internships and other opportunities that will broaden my knowledge and professional network!. 
                 My long term goal however is to leverage my skills to create innovative cybersecurity solutions while mentoring and supporting underprivileged individuals in tech.</p>
-            <ResumeButton href="/owusuomaribright_resume_professional.pdf" target="_blank">
+            <ResumeButton href="/owusuomaribright_resume.docx.pdf" target="_blank">
               Resume
             </ResumeButton>
           </Education>

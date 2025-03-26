@@ -367,7 +367,7 @@ const Header = () => {
   return (
     <HeaderContainer>
       <ContentContainer>
-        <ResumeButton href="/owusuomaribright_resume_professional.pdf" download>
+        <ResumeButton href="/owusuomaribright_resume.docx.pdf" download>
         🛸
       </ResumeButton>
         <WelcomeMessage>Welcome Into My Universe</WelcomeMessage>
