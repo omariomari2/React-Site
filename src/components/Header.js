@@ -179,12 +179,51 @@ const HeaderContainer = styled.header`
   }
 `;
 
+const MobileMenuButton = styled.button`
+  display: none;
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  background: rgba(65, 105, 225, 0.1);
+  border: 1px solid rgba(65, 105, 225, 0.3);
+  border-radius: 50%;
+  width: 3rem;
+  height: 3rem;
+  color: #fff;
+  font-size: 1.5rem;
+  cursor: pointer;
+  z-index: 1000;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: rgba(65, 105, 225, 0.2);
+  }
+
+  @media (max-width: 768px) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+`;
+
 const ContentContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   z-index: 2;
+  transition: transform 0.3s ease;
+
+  @media (max-width: 768px) {
+    transform: ${props => props.isMenuOpen ? 'translateY(0)' : 'translateY(-100vh)'};
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.95);
+    padding: 2rem;
+  }
 `;
 
 const WelcomeMessage = styled.h1`
@@ -321,6 +360,7 @@ const TypewriterText = styled.div`
 const Header = () => {
   const [typewriterIndex, setTypewriterIndex] = useState(0);
   const [isWaiting, setIsWaiting] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const typewriterTexts = useMemo(() => [
     "Hi,",
@@ -339,24 +379,18 @@ const Header = () => {
     
     const nextText = () => {
       if (typewriterIndex === typewriterTexts.length - 1) {
-        // At the end of sequence, wait 3 seconds before restart
         setIsWaiting(true);
         timer = setTimeout(() => {
           setIsWaiting(false);
           setTypewriterIndex(0);
         }, 3000);
       } else {
-        // For each text in sequence:
-        // 1. Type out text (1.5s animation)
-        // 2. Keep visible (0.5s extra)
-        // Then move to next text
         timer = setTimeout(() => {
           setTypewriterIndex(prevIndex => prevIndex + 1);
         }, 2000);
       }
     };
 
-    // Start the next text cycle if not in waiting period
     if (!isWaiting) {
       timer = setTimeout(nextText, 2000);
     }
@@ -366,10 +400,13 @@ const Header = () => {
 
   return (
     <HeaderContainer>
-      <ContentContainer>
-        <ResumeButton href="/owusuomaribright_resume.docx.pdf" download>
-        🛸
-      </ResumeButton>
+      <MobileMenuButton onClick={() => setIsMenuOpen(!isMenuOpen)}>
+        {isMenuOpen ? '×' : '☰'}
+      </MobileMenuButton>
+      <ContentContainer isMenuOpen={isMenuOpen}>
+        <ResumeButton href="/owusuomaribright_resume.docx.pdf" download onClick={() => setIsMenuOpen(false)}>
+          🛸
+        </ResumeButton>
         <WelcomeMessage>Welcome Into My Universe</WelcomeMessage>
         <TypewriterContainer>
           <TypewriterText key={typewriterIndex} isWaiting={isWaiting}>

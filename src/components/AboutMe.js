@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled, { keyframes } from 'styled-components';
 
 const float = keyframes`
@@ -163,6 +163,55 @@ const ResumeButton = styled.a`
   }
 `;
 
+const SectionHeader = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  padding: 1rem;
+  background: rgba(65, 105, 225, 0.1);
+  border-radius: 10px;
+  margin-bottom: ${props => props.isOpen ? '1rem' : '0'};
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: rgba(65, 105, 225, 0.2);
+  }
+
+  h3 {
+    margin: 0;
+  }
+`;
+
+const Arrow = styled.span`
+  transform: ${props => props.isOpen ? 'rotate(180deg)' : 'rotate(0)'};
+  transition: transform 0.3s ease;
+  font-size: 1.2rem;
+`;
+
+const SectionContent = styled.div`
+  max-height: ${props => props.isOpen ? '2000px' : '0'};
+  overflow: hidden;
+  transition: max-height 0.6s ease;
+  opacity: ${props => props.isOpen ? '1' : '0'};
+`;
+
+const CollapsibleSection = ({ title, children }) => {
+  const [isOpen, setIsOpen] = useState(true);
+
+  return (
+    <div>
+      <SectionHeader isOpen={isOpen} onClick={() => setIsOpen(!isOpen)}>
+        <h3>{title}</h3>
+        <Arrow isOpen={isOpen}>▼</Arrow>
+      </SectionHeader>
+      <SectionContent isOpen={isOpen}>
+        {children}
+      </SectionContent>
+    </div>
+  );
+};
+
 const AboutMe = () => {
   const languages = ['Python', 'C', 'C++', 'JavaScript', 'TypeScript'];
   const tools = ['Git/GitHub', 'Replit', 'Firebase', 'RESTFUL APIs', 'Netlify', 'React', 'Tailwind', 'Figma'];
@@ -174,61 +223,61 @@ const AboutMe = () => {
         <InfoSection>
           <Name>BRIGHT OMARI OWUSU</Name>
           
-          <Education>
-            <h3>Education</h3>
-            <p>Grambling State University — Grambling, LA, USA</p>
-            <p>Bachelor of Science in Cybersecurity Defense Strategy/Policy</p>
-            <p>Expected: May 2028</p><br></br>
-            <p>I am a dedicated Cybersecurity student at Grambling State University with a strong passion for securing web data and integrating software engineering principles into cybersecurity solutions. 
+          <CollapsibleSection title="Education & Background">
+            <Education>
+              <p>Grambling State University — Grambling, LA, USA</p>
+              <p>Bachelor of Science in Cybersecurity Defense Strategy/Policy</p>
+              <p>Expected: May 2028</p><br></br>
+              <p>I am a dedicated Cybersecurity student at Grambling State University with a strong passion for securing web data and integrating software engineering principles into cybersecurity solutions. 
                 <br />With proficiency in Python and JavaScript, I actively work on projects that enhance my technical expertise.
                 I have a strong affinity for web development, and I achieve excellent work done using TailwindCSS, Figma, and React!.
                 I also enjoy 3d rendering using Three.Js . <br /><br />Currently, I am seeking research, internships and other opportunities that will broaden my knowledge and professional network!. 
                 My long term goal however is to leverage my skills to create innovative cybersecurity solutions while mentoring and supporting underprivileged individuals in tech.</p>
-            <ResumeButton href="/owusuomaribright_resume.docx.pdf" target="_blank">
-              Resume
-            </ResumeButton>
-          </Education>
+              <ResumeButton href="/owusuomaribright_resume.docx.pdf" target="_blank">
+                Resume
+              </ResumeButton>
+            </Education>
+          </CollapsibleSection>
 
-          <div>
-            <h3>Technical Expertise</h3>
-            
-            <h4 style={{ marginTop: '1rem', marginBottom: '0.5rem', color: '#4169E1' }}>Languages</h4>
-            <SkillsContainer>
-              {languages.map((skill, index) => (
-                <SkillTag 
-                  key={skill}
-                  delay={4 + (index % 3)}
-                >
-                  {skill}
-                </SkillTag>
-              ))}
-            </SkillsContainer>
-            
-            <h4 style={{ marginTop: '1rem', marginBottom: '0.5rem', color: '#4169E1' }}>Tools/Technology</h4>
-            <SkillsContainer>
-              {tools.map((skill, index) => (
-                <SkillTag 
-                  key={skill}
-                  delay={4 + (index % 3)}
-                >
-                  {skill}
-                </SkillTag>
-              ))}
-            </SkillsContainer>
-            
-            <h4 style={{ marginTop: '1rem', marginBottom: '0.5rem', color: '#4169E1' }}>Skills</h4>
-            <SkillsContainer>
-              {specialties.map((skill, index) => (
-                <SkillTag 
-                  key={skill}
-                  delay={4 + (index % 3)}
-                >
-                  {skill}
-                </SkillTag>
-              ))}
-            </SkillsContainer>
-          </div>
+          <CollapsibleSection title="Technical Expertise">
+            <div>
+              <h4 style={{ marginTop: '1rem', marginBottom: '0.5rem', color: '#4169E1' }}>Languages</h4>
+              <SkillsContainer>
+                {languages.map((skill, index) => (
+                  <SkillTag 
+                    key={skill}
+                    delay={4 + (index % 3)}
+                  >
+                    {skill}
+                  </SkillTag>
+                ))}
+              </SkillsContainer>
 
+              <h4 style={{ marginTop: '1rem', marginBottom: '0.5rem', color: '#4169E1' }}>Tools & Frameworks</h4>
+              <SkillsContainer>
+                {tools.map((skill, index) => (
+                  <SkillTag 
+                    key={skill}
+                    delay={4 + (index % 3)}
+                  >
+                    {skill}
+                  </SkillTag>
+                ))}
+              </SkillsContainer>
+
+              <h4 style={{ marginTop: '1rem', marginBottom: '0.5rem', color: '#4169E1' }}>Specialties</h4>
+              <SkillsContainer>
+                {specialties.map((skill, index) => (
+                  <SkillTag 
+                    key={skill}
+                    delay={4 + (index % 3)}
+                  >
+                    {skill}
+                  </SkillTag>
+                ))}
+              </SkillsContainer>
+            </div>
+          </CollapsibleSection>
         </InfoSection>
       </ProfileSection>
     </AboutContainer>
