@@ -26,10 +26,10 @@ const AboutContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 2rem;
+  gap: 1.5rem;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 1rem;
   position: relative;
   color: #fff;
 `;
@@ -37,7 +37,7 @@ const AboutContainer = styled.div`
 const ProfileSection = styled.div`
   position: relative;
   width: 100%;
-  padding: 2rem;
+  padding: 1rem;
   overflow: hidden;
   border-radius: 15px;
 
@@ -74,8 +74,8 @@ const Name = styled.h2`
 `;
 
 const Education = styled.div`
-  margin: 1.5rem 0;
-  padding: 1.5rem;
+  margin: 1rem 0;
+  padding: 1rem;
   background: rgba(65, 105, 225, 0.1);
   border-radius: 10px;
   border: 1px solid rgba(65, 105, 225, 0.3);
@@ -83,6 +83,7 @@ const Education = styled.div`
   animation: ${float} 6s ease-in-out infinite;
   position: relative;
   overflow: hidden;
+  width: 100%;
   
   &::before {
     content: '';
@@ -105,21 +106,23 @@ const Education = styled.div`
 const SkillsContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
-  gap: 1rem;
-  margin: 1.5rem 0;
+  gap: 0.75rem;
+  width: 100%;
+  margin: 0.5rem 0;
   position: relative;
 `;
 
 const SkillTag = styled.span`
-  padding: 0.5rem 1rem;
-  background: rgba(65, 105, 225, 0.2);
+  padding: 0.25rem 0.5rem;
+  background: rgba(65, 105, 225, 0.1);
+  border: 1px solid rgba(65, 105, 225, 0.3);
   border-radius: 20px;
   font-size: 0.9rem;
-  border: 1px solid rgba(65, 105, 225, 0.3);
   transition: all 0.3s ease;
   animation: ${float} ${props => props.delay}s ease-in-out infinite;
   position: relative;
   overflow: hidden;
+  white-space: nowrap;
   
   &:hover {
     transform: scale(1.1);
