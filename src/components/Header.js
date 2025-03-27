@@ -68,6 +68,7 @@ const HeaderContainer = styled.div`
   background: linear-gradient(to bottom, #000000, #000033);
   position: relative;
   overflow: hidden;
+  z-index: 1;
 
   &::after {
     content: '';
@@ -255,8 +256,16 @@ const WelcomeMessage = styled.h1`
   margin-top: 2vh;
   animation: ${float} 6s ease-in-out infinite;
   font-family: 'Orbitron', sans-serif;
-  position: relative;
-  z-index: 2;
+  position: fixed;
+  top: 25vh;
+  left: 0;
+  width: 100%;
+  z-index: -999;
+  padding: 1rem 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(5px);
+  transition: all 0.3s ease;
+  pointer-events: none;
   
   &::before, &::after {
     content: '';
@@ -273,6 +282,7 @@ const WelcomeMessage = styled.h1`
     );
     animation: shimmer 3s linear infinite;
     transform: skewX(-20deg);
+    z-index: -999;
   }
   
   &::after {
@@ -331,7 +341,8 @@ const ContentContainer = styled.div`
   height: 100%;
   width: 100%;
   position: relative;
-  z-index: 1;
+  z-index: 2;
+  padding-top: calc(25vh + 8rem); /* Add space for the fixed welcome message */
 `;
 
 const Header = () => {

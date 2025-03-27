@@ -24,6 +24,8 @@ const AppContainer = styled.div`
   background-position: 0 0, 40px 60px, 130px 270px, 70px 100px;
   color: #fff;
   overflow-x: hidden;
+  position: relative;
+  z-index: 2;
 `;
 
 const StarsBackground = styled.div`
@@ -57,6 +59,8 @@ const Section = styled.section`
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
+  position: relative;
+  z-index: 2;
   
   &#about {
     padding-top: 20px;
@@ -70,6 +74,7 @@ const SectionTitle = styled.h2`
   color: #4169E1;
   text-shadow: 0 0 10px rgba(65, 105, 225, 0.7);
   position: relative;
+  z-index: 1;
   
   &:after {
     content: '';
@@ -91,6 +96,8 @@ const SectionContent = styled.div`
   padding: 15px;
   border: 1px solid rgba(65, 105, 225, 0.3);
   box-shadow: 0 0 20px rgba(65, 105, 225, 0.2);
+  position: relative;
+  z-index: 2;
 `;
 
 function App() {
