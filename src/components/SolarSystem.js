@@ -6,7 +6,7 @@ import styled from 'styled-components';
 
 const SolarSystemContainer = styled.div`
   width: 100%;
-  height: 100vh;
+  height: 85vh;
   background: linear-gradient(to bottom, #000000, #000033);
   position: relative;
   
