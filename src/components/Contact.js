@@ -1,5 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
+import { FaGithub, FaLinkedin, FaEnvelope, FaPhone } from 'react-icons/fa';
+import { motion } from 'framer-motion';
 
 const ContactContainer = styled.div`
   display: flex;
@@ -12,7 +14,7 @@ const ContactContainer = styled.div`
   overflow: hidden;
 `;
 
-const Title = styled.h2`
+const Title = styled(motion.h2)`
   font-size: 3.5rem;
   color: #fff;
   margin-bottom: 4rem;
@@ -32,7 +34,7 @@ const Title = styled.h2`
   }
 `;
 
-const ContactCard = styled.div`
+const ContactCard = styled(motion.div)`
   background: rgba(10, 10, 40, 0.5);
   border-radius: 25px;
   padding: 3rem;
@@ -67,7 +69,7 @@ const ContactInfo = styled.div`
   }
 `;
 
-const ContactItem = styled.div`
+const ContactItem = styled(motion.div)`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -76,6 +78,14 @@ const ContactItem = styled.div`
   border-radius: 20px;
   background: rgba(65, 105, 225, 0.1);
   transition: all 0.3s ease;
+  cursor: pointer;
+  
+  .icon {
+    font-size: 2.5rem;
+    color: #4169E1;
+    margin-bottom: 1rem;
+    transition: all 0.3s ease;
+  }
   
   h3 {
     font-size: 1.4rem;
@@ -86,6 +96,12 @@ const ContactItem = styled.div`
   
   &:hover {
     background: rgba(65, 105, 225, 0.2);
+    transform: translateY(-5px);
+    
+    .icon {
+      transform: scale(1.1);
+      color: #fff;
+    }
   }
 `;
 
@@ -99,60 +115,74 @@ const ContactLink = styled.a`
   border: 1px solid rgba(65, 105, 225, 0.3);
   transition: all 0.3s ease;
   width: 100%;
-  max-width: 280px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
   
   &:hover {
     background: rgba(65, 105, 225, 0.4);
     border-color: rgba(65, 105, 225, 0.8);
-    box-shadow: 0 5px 15px rgba(65, 105, 225, 0.3);
-  }
-
-  @media (max-width: 480px) {
-    font-size: 1rem;
-    padding: 0.8rem 1.5rem;
+    transform: translateY(-2px);
   }
 `;
 
 const Contact = () => {
-  const contactInfo = [
-    {
-      type: 'GitHub',
-      value: 'github.com/omariomari2',
-      link: 'https://github.com/omariomari2'
-    },
-    {
-      type: 'LinkedIn',
-      value: 'linkedin.com/in/owusuomaribright',
-      link: 'http://www.linkedin.com/in/owusuomaribright'
-    },
-    {
-      type: 'Email',
-      value: 'owusuomaribright@gmail.com',
-      link: 'mailto:owusuomaribright@gmail.com'
-    },
-    {
-      type: 'Address',
-      value: '403 Main Street, Grambling, LA',
-      link: 'https://maps.google.com/?q=403+Main+Street,+Grambling,+LA'
-    }
-  ];
-
   return (
-    <ContactContainer>
-      <Title>Let's Connect</Title>
-      <ContactCard>
+    <ContactContainer id="contact">
+      <Title
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+      >
+        Let's Connect
+      </Title>
+      <ContactCard
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.6, delay: 0.2 }}
+      >
         <ContactInfo>
-          {contactInfo.map((info, index) => (
-            <ContactItem key={index}>
-              <h3>{info.type}</h3>
-              <ContactLink href={info.link} target="_blank" rel="noopener noreferrer">
-                {info.value}
-              </ContactLink>
-            </ContactItem>
-          ))}
+          <ContactItem
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.98 }}
+          >
+            <FaEnvelope className="icon" />
+            <h3>Email</h3>
+            <ContactLink href="mailto:owusuomaribright@gmail.com">
+              owusuomaribright@gmail.com
+            </ContactLink>
+          </ContactItem>
+          <ContactItem
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.98 }}
+          >
+            <FaGithub className="icon" />
+            <h3>GitHub</h3>
+            <ContactLink href="https://github.com/omariomari2" target="_blank" rel="noopener noreferrer">
+              <FaGithub /> @omariomari2
+            </ContactLink>
+          </ContactItem>
+          <ContactItem
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.98 }}
+          >
+            <FaLinkedin className="icon" />
+            <h3>LinkedIn</h3>
+            <ContactLink href="http://www.linkedin.com/in/owusuomaribright" target="_blank" rel="noopener noreferrer">
+              <FaLinkedin /> Connect with me
+            </ContactLink>
+          </ContactItem>
+          <ContactItem
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.98 }}
+          >
+            <FaPhone className="icon" />
+            <h3>Address</h3>
+            <ContactLink href="https://maps.google.com/?q=403+Main+Street,+Grambling,+LA">
+              403 Main Street, Grambling, LA
+            </ContactLink>
+          </ContactItem>
         </ContactInfo>
       </ContactCard>
     </ContactContainer>
