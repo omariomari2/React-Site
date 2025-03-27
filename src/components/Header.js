@@ -359,7 +359,7 @@ const Header = () => {
         timer = setTimeout(() => {
           setIsWaiting(false);
           setTypewriterIndex(0);
-        }, 3000);
+        }, 1500);
       } else {
         timer = setTimeout(() => {
           setTypewriterIndex(prevIndex => prevIndex + 1);

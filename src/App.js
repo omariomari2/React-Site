@@ -52,20 +52,20 @@ const StarsBackground = styled.div`
 
 const Section = styled.section`
   min-height: 100vh;
-  padding: 60px 20px;
+  padding: 40px 10px;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
   
   &#about {
-    padding-top: 40px;
+    padding-top: 20px;
   }
 `;
 
 const SectionTitle = styled.h2`
   font-size: 2.5rem;
-  margin-bottom: 40px;
+  margin-bottom: 20px;
   text-align: center;
   color: #4169E1;
   text-shadow: 0 0 10px rgba(65, 105, 225, 0.7);
@@ -88,7 +88,7 @@ const SectionContent = styled.div`
   width: 100%;
   background-color: rgba(0, 0, 20, 0.7);
   border-radius: 15px;
-  padding: 30px;
+  padding: 15px;
   border: 1px solid rgba(65, 105, 225, 0.3);
   box-shadow: 0 0 20px rgba(65, 105, 225, 0.2);
 `;

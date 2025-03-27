@@ -26,10 +26,10 @@ const AboutContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1.5rem;
+  gap: 1rem;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 1rem;
+  padding: 0.5rem;
   position: relative;
   color: #fff;
 `;
@@ -37,7 +37,7 @@ const AboutContainer = styled.div`
 const ProfileSection = styled.div`
   position: relative;
   width: 100%;
-  padding: 1rem;
+  padding: 0.5rem;
   overflow: hidden;
   border-radius: 15px;
 
@@ -74,8 +74,8 @@ const Name = styled.h2`
 `;
 
 const Education = styled.div`
-  margin: 1rem 0;
-  padding: 1rem;
+  margin: 0.5rem 0;
+  padding: 0.75rem;
   background: rgba(65, 105, 225, 0.1);
   border-radius: 10px;
   border: 1px solid rgba(65, 105, 225, 0.3);
@@ -106,9 +106,9 @@ const Education = styled.div`
 const SkillsContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
-  gap: 0.75rem;
+  gap: 0.5rem;
   width: 100%;
-  margin: 0.5rem 0;
+  margin: 0.25rem 0;
   position: relative;
 `;
 
@@ -219,6 +219,21 @@ const ProfileGrid = styled.div`
   margin: 1rem 0;
   position: relative;
   z-index: 1;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url('/background_image.jpg');
+    background-size: cover;
+    background-position: center;
+    opacity: 0.8;
+    z-index: -1;
+    border-radius: 10px;
+  }
 
   @media (max-width: 768px) {
     grid-template-columns: 1fr;
@@ -236,7 +251,7 @@ const ProfileDescription = styled.div`
 const ProfileImageContainer = styled.div`
   position: relative;
   width: 100%;
-  max-width: 300px;
+  max-width: 400px;
   margin: 0 auto;
 `;
 
@@ -245,6 +260,7 @@ const ProfileImage = styled.img`
   height: auto;
   border-radius: 12px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  transform: scale(1.1);
 `;
 
 const CollapsibleSection = ({ title, children }) => {
