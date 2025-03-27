@@ -9,6 +9,7 @@ const SolarSystemContainer = styled.div`
   height: 85vh;
   background: linear-gradient(to bottom, #000000, #000033);
   position: relative;
+  z-index: 1;
   
   canvas {
     touch-action: none;

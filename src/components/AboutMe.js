@@ -48,11 +48,11 @@ const ProfileSection = styled.div`
     left: 0;
     right: 0;
     bottom: 0;
-    background-image: url('/profile_picture.jpg');
-    background-size: cover;
+    background-image: url('/background_image.png');
+    background-size: contain;
     background-position: center;
-    filter: blur(20px) brightness(0.3);
-    transform: scale(1.1);
+    background-repeat: no-repeat;
+    filter: brightness(0.3);
     z-index: -1;
   }
 `;
@@ -228,11 +228,6 @@ const ProfileDescription = styled.div`
   line-height: 1.6;
   color: #fff;
   padding: 1.5rem;
-  background: rgba(65, 105, 225, 0.1);
-  backdrop-filter: blur(5px);
-  border-radius: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 `;
 
 const ProfileImageContainer = styled.div`

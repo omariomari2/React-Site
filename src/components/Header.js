@@ -62,14 +62,25 @@ const fadeOut = keyframes`
   to { opacity: 0; }
 `;
 
-const HeaderContainer = styled.header`
+const HeaderContainer = styled.div`
+  width: 100%;
   height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  background: linear-gradient(to bottom, #000000, #000033);
   position: relative;
   overflow: hidden;
-  background: radial-gradient(circle at center, rgba(0, 0, 20, 0.8) 0%, rgba(0, 0, 0, 0.95) 100%);
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+    background-size: 3px 3px;
+    opacity: 0.8;
+    pointer-events: none;
+  }
 
   &::before, &::after {
     content: '';
