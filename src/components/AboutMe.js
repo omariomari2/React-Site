@@ -35,14 +35,25 @@ const AboutContainer = styled.div`
 `;
 
 const ProfileSection = styled.div`
-  display: flex;
-  gap: 3rem;
-  align-items: center;
+  position: relative;
   width: 100%;
-  
-  @media (max-width: 768px) {
-    flex-direction: column;
-    text-align: center;
+  padding: 2rem;
+  overflow: hidden;
+  border-radius: 15px;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url('/profile_picture.jpg');
+    background-size: cover;
+    background-position: center;
+    filter: blur(20px) brightness(0.3);
+    transform: scale(1.1);
+    z-index: -1;
   }
 `;
 
@@ -196,6 +207,48 @@ const SectionContent = styled.div`
   opacity: ${props => props.isOpen ? '1' : '0'};
 `;
 
+const ProfileGrid = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  width: 100%;
+  align-items: center;
+  margin: 1rem 0;
+  position: relative;
+  z-index: 1;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+`;
+
+const ProfileDescription = styled.div`
+  font-size: 1.2rem;
+  line-height: 1.6;
+  color: #fff;
+  padding: 1.5rem;
+  background: rgba(65, 105, 225, 0.1);
+  backdrop-filter: blur(5px);
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+`;
+
+const ProfileImageContainer = styled.div`
+  position: relative;
+  width: 100%;
+  max-width: 300px;
+  margin: 0 auto;
+`;
+
+const ProfileImage = styled.img`
+  width: 100%;
+  height: auto;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+`;
+
 const CollapsibleSection = ({ title, children }) => {
   const [isOpen, setIsOpen] = useState(true);
 
@@ -222,6 +275,17 @@ const AboutMe = () => {
       <ProfileSection>
         <InfoSection>
           <Name>BRIGHT OMARI OWUSU</Name>
+          
+          <CollapsibleSection title="Profile">
+            <ProfileGrid>
+              <ProfileDescription>
+                Let's Collaborate!
+              </ProfileDescription>
+              <ProfileImageContainer>
+                <ProfileImage src="/profile_picture.jpg" alt="Bright Omari Owusu" />
+              </ProfileImageContainer>
+            </ProfileGrid>
+          </CollapsibleSection>
           
           <CollapsibleSection title="Education & Background">
             <Education>

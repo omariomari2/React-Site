@@ -9,6 +9,10 @@ const SolarSystemContainer = styled.div`
   height: 100vh;
   background: linear-gradient(to bottom, #000000, #000033);
   position: relative;
+  
+  canvas {
+    touch-action: none;
+  }
 `;
 
 const InfoPanel = styled.div`
@@ -598,12 +602,13 @@ function SolarSystem() {
         <ManualTitle><span>🚀</span>Manual</ManualTitle>
         <ManualInstruction><span>🖱️</span>Click planet</ManualInstruction>
         <ManualInstruction><span>👆</span>Drag to rotate</ManualInstruction>
-        <ManualInstruction><span>⚙️</span>Scroll to zoom</ManualInstruction>
+        <ManualInstruction><span>🤏</span>Pinch to zoom</ManualInstruction>
       </ManualPanel>
 
       <Canvas 
         camera={{ position: [0, 45, 100], fov: 45 }}
         gl={{ antialias: true }}
+        onWheel={(e) => e.stopPropagation()}
       >
         <ambientLight intensity={0.3} />
         <pointLight position={[0, 0, 0]} intensity={4} color="#4169E1" />
@@ -663,6 +668,17 @@ function SolarSystem() {
           maxDistance={180}
           maxPolarAngle={Math.PI / 2}
           minPolarAngle={Math.PI / 4}
+          mouseButtons={{
+            LEFT: THREE.MOUSE.ROTATE,
+            MIDDLE: THREE.MOUSE.PAN,
+            RIGHT: THREE.MOUSE.PAN
+          }}
+          touches={{
+            ONE: THREE.TOUCH.ROTATE,
+            TWO: THREE.TOUCH.DOLLY_PAN
+          }}
+          enableZoomWithWheel={false}
+          onWheel={(e) => e.preventDefault()}
         />
       </Canvas>
     </SolarSystemContainer>
