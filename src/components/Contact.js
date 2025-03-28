@@ -7,11 +7,16 @@ const ContactContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 6rem 2rem;
+  padding: 6rem 1rem;
   min-height: 100vh;
   background: radial-gradient(circle at center, rgba(0, 0, 20, 0.8) 0%, rgba(0, 0, 0, 0.95) 100%);
   position: relative;
   overflow: hidden;
+  box-sizing: border-box;
+
+  @media (max-width: 768px) {
+    padding: 4rem 0.5rem;
+  }
 `;
 
 const Title = styled(motion.h2)`
@@ -21,6 +26,11 @@ const Title = styled(motion.h2)`
   text-align: center;
   position: relative;
   letter-spacing: 2px;
+  
+  @media (max-width: 768px) {
+    font-size: 2.5rem;
+    margin-bottom: 3rem;
+  }
   
   &::after {
     content: '';
@@ -45,6 +55,7 @@ const ContactCard = styled(motion.div)`
   transform-style: preserve-3d;
   perspective: 1000px;
   transition: all 0.3s ease;
+  box-sizing: border-box;
   
   &:hover {
     border-color: rgba(65, 105, 225, 0.8);
@@ -52,7 +63,7 @@ const ContactCard = styled(motion.div)`
   }
 
   @media (max-width: 768px) {
-    padding: 2rem;
+    padding: 1rem;
     width: 95%;
   }
 `;
@@ -62,10 +73,12 @@ const ContactInfo = styled.div`
   grid-template-columns: repeat(2, 1fr);
   gap: 2.5rem;
   margin-bottom: 2rem;
+  width: 100%;
+  box-sizing: border-box;
 
   @media (max-width: 768px) {
     grid-template-columns: 1fr;
-    gap: 2rem;
+    gap: 1rem;
   }
 `;
 
@@ -74,11 +87,13 @@ const ContactItem = styled(motion.div)`
   flex-direction: column;
   align-items: center;
   text-align: center;
-  padding: 2rem;
+  padding: 1.5rem;
   border-radius: 20px;
   background: rgba(65, 105, 225, 0.1);
   transition: all 0.3s ease;
   cursor: pointer;
+  box-sizing: border-box;
+  width: 100%;
   
   .icon {
     font-size: 2.5rem;
@@ -92,6 +107,20 @@ const ContactItem = styled(motion.div)`
     margin-bottom: 1.2rem;
     color: #4169E1;
     letter-spacing: 1px;
+  }
+
+  @media (max-width: 768px) {
+    padding: 1rem;
+    
+    .icon {
+      font-size: 1.8rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    h3 {
+      font-size: 1.1rem;
+      margin-bottom: 0.75rem;
+    }
   }
   
   &:hover {
