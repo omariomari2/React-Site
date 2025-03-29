@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import styled, { keyframes } from 'styled-components';
 
 const ProjectsContainer = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  display: flex;
+  flex-direction: column;
   gap: 30px;
   width: 100%;
   position: relative;
@@ -56,23 +56,16 @@ const Comet = styled.div`
 `;
 
 const ProjectCard = styled.div`
-  background: rgba(10, 10, 40, 0.5);
+  position: relative;
+  width: 100%;
+  height: 300px;
   border-radius: 10px;
-  padding: 20px;
+  overflow: hidden;
   transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   border: 1px solid rgba(65, 105, 225, 0.3);
-  position: relative;
   z-index: 2;
-  backdrop-filter: blur(5px);
   transform-style: preserve-3d;
   perspective: 1000px;
-  
-  &:hover {
-    transform: translateY(-10px) scale(1.02) rotateX(5deg);
-    box-shadow: 0 15px 30px rgba(65, 105, 225, 0.3);
-    background: rgba(15, 15, 60, 0.7);
-    border-color: rgba(65, 105, 225, 0.8);
-  }
   
   &::before {
     content: '';
@@ -81,24 +74,91 @@ const ProjectCard = styled.div`
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(45deg, transparent, rgba(65, 105, 225, 0.1), transparent);
-    transform: translateZ(-1px);
-    transition: all 0.5s ease;
+    background-image: var(--bg-image);
+    background-size: cover;
+    background-position: center;
+    opacity: 1;
+    z-index: -1;
+  }
+  
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(10, 10, 40, 0.2);
+    z-index: -1;
+    opacity: 1;
+    transition: opacity 0.5s ease;
+  }
+  
+  @media (hover: hover) and (pointer: fine) {
+    &:hover::after {
+      opacity: 0;
+    }
+    
+    &:hover .project-content {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    
+    &:hover .project-title-overlay {
+      opacity: 0;
+    }
+  }
+`;
+
+const ProjectTitleOverlay = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+  transition: opacity 0.5s ease;
+  
+  h2 {
+    font-size: 2.5rem;
+    color: #fff;
+    text-shadow: 0 0 10px rgba(0, 0, 0, 0.9), 0 0 20px rgba(0, 0, 0, 0.7);
+    font-weight: 700;
+    text-align: center;
+    padding: 0 20px;
+  }
+  
+  @media (max-width: 768px) {
     opacity: 0;
   }
+`;
+
+const ProjectContent = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background: rgba(10, 10, 40, 0.7);
+  backdrop-filter: blur(3px);
+  z-index: 2;
   
-  &:hover::before {
-    opacity: 1;
-    animation: shimmerEffect 2s infinite;
+  @media (hover: hover) and (pointer: fine) {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.5s ease;
   }
   
-  @keyframes shimmerEffect {
-    0% {
-      background-position: -200% 0;
-    }
-    100% {
-      background-position: 200% 0;
-    }
+  @media (max-width: 768px) {
+    opacity: 1;
+    transform: translateY(0);
   }
 `;
 
@@ -108,12 +168,6 @@ const ProjectType = styled.div`
   margin-bottom: 10px;
   opacity: 0.8;
   transition: all 0.3s ease;
-  transform: translateZ(20px);
-  
-  ${ProjectCard}:hover & {
-    opacity: 1;
-    transform: translateZ(30px);
-  }
 `;
 
 const ProjectTitle = styled.h3`
@@ -121,12 +175,6 @@ const ProjectTitle = styled.h3`
   color: #fff;
   margin-bottom: 15px;
   transition: all 0.3s ease;
-  transform: translateZ(30px);
-  
-  ${ProjectCard}:hover & {
-    transform: translateZ(40px);
-    text-shadow: 0 0 10px rgba(65, 105, 225, 0.5);
-  }
 `;
 
 const ProjectDescription = styled.p`
@@ -134,11 +182,10 @@ const ProjectDescription = styled.p`
   margin-bottom: 20px;
   line-height: 1.6;
   transition: all 0.3s ease;
-  transform: translateZ(25px);
   
-  ${ProjectCard}:hover & {
-    color: #D0D0FF;
-    transform: translateZ(35px);
+  @media (max-width: 768px) {
+    max-height: 100px;
+    overflow-y: auto;
   }
 `;
 
@@ -147,12 +194,7 @@ const TechStack = styled.div`
   flex-wrap: wrap;
   gap: 8px;
   margin-bottom: 20px;
-  transform: translateZ(20px);
   transition: all 0.3s ease;
-  
-  ${ProjectCard}:hover & {
-    transform: translateZ(30px);
-  }
 `;
 
 const TechTag = styled.span`
@@ -163,13 +205,6 @@ const TechTag = styled.span`
   color: #B0B0FF;
   border: 1px solid rgba(65, 105, 225, 0.3);
   transition: all 0.3s ease;
-  
-  ${ProjectCard}:hover & {
-    background: rgba(65, 105, 225, 0.3);
-    color: #fff;
-    border-color: rgba(65, 105, 225, 0.6);
-    transform: scale(1.05);
-  }
 `;
 
 const ProjectLink = styled.a`
@@ -181,7 +216,6 @@ const ProjectLink = styled.a`
   border-radius: 20px;
   transition: all 0.3s ease;
   border: 1px solid rgba(65, 105, 225, 0.3);
-  transform: translateZ(20px);
   position: relative;
   overflow: hidden;
   
@@ -196,9 +230,8 @@ const ProjectLink = styled.a`
     transition: 0.5s;
   }
   
-  ${ProjectCard}:hover & {
+  &:hover {
     background: rgba(65, 105, 225, 0.4);
-    transform: translateZ(30px);
     border-color: rgba(65, 105, 225, 0.8);
     box-shadow: 0 5px 15px rgba(65, 105, 225, 0.3);
     
@@ -210,6 +243,18 @@ const ProjectLink = styled.a`
 
 const Projects = () => {
   const [comets, setComets] = useState([]);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   useEffect(() => {
     const generateComet = () => {
@@ -245,6 +290,16 @@ const Projects = () => {
     const timeout = setTimeout(addNewComet, 500);
     return () => clearTimeout(timeout);
   }, []);
+
+  // Map project titles to their corresponding image files
+  const projectImages = {
+    "Pomodoro Play": "/project_images/pomodoro.png",
+    "Website Vulnerability Scanner": "/project_images/website_vulnerabitlity_scanner.jpg",
+    "Church Website": "/project_images/church_website.png",
+    "Research Team Platform": "/project_images/research_team.png",
+    "Typing Speed Game": "/project_images/typing_speed_game.jpg",
+    "Collaborate": "" // No specific image for this one
+  };
 
   const projects = [
     {
@@ -318,26 +373,39 @@ const Projects = () => {
       ))}
       
       {projects.map(project => (
-        <ProjectCard key={project.id}>
-          <ProjectType>{project.type}</ProjectType>
-          <ProjectTitle>{project.title}</ProjectTitle>
-          <ProjectDescription>{project.description}</ProjectDescription>
-          <TechStack>
-            {project.tech.map((tech, index) => (
-              <TechTag key={index}>{tech}</TechTag>
-            ))}
-          </TechStack>
-          {project.links ? (
-            project.links.map(link => (
-              <ProjectLink key={link.name} href={link.url} target="_blank" rel="noopener noreferrer">
-                {link.name}
+        <ProjectCard 
+          key={project.id}
+          style={{
+            '--bg-image': project.title in projectImages && projectImages[project.title] 
+              ? `url(${projectImages[project.title]})` 
+              : 'none'
+          }}
+        >
+          <ProjectTitleOverlay className="project-title-overlay">
+            <h2>{project.title}</h2>
+          </ProjectTitleOverlay>
+          
+          <ProjectContent className="project-content">
+            <ProjectType>{project.type}</ProjectType>
+            <ProjectTitle>{project.title}</ProjectTitle>
+            <ProjectDescription>{project.description}</ProjectDescription>
+            <TechStack>
+              {project.tech.map((tech, index) => (
+                <TechTag key={index}>{tech}</TechTag>
+              ))}
+            </TechStack>
+            {project.links ? (
+              project.links.map(link => (
+                <ProjectLink key={link.name} href={link.url} target="_blank" rel="noopener noreferrer">
+                  {link.name}
+                </ProjectLink>
+              ))
+            ) : (
+              <ProjectLink href={project.link} target="_blank" rel="noopener noreferrer">
+                View Project
               </ProjectLink>
-            ))
-          ) : (
-            <ProjectLink href={project.link} target="_blank" rel="noopener noreferrer">
-              View Project
-            </ProjectLink>
-          )}
+            )}
+          </ProjectContent>
         </ProjectCard>
       ))}
     </ProjectsContainer>

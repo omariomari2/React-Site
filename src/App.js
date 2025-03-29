@@ -10,6 +10,7 @@ import Education from './components/Education';
 import Contact from './components/Contact';
 import Research from './components/Research';
 import Rocket from './components/Rocket';
+import Footer from './components/Footer';
 
 const AppContainer = styled.div`
   width: 100%;
@@ -157,6 +158,8 @@ function App() {
             <Contact />
           </SectionContent>
         </Section>
+        
+        <Footer />
       </AppContainer>
     </div>
   );
