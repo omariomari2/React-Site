@@ -263,8 +263,8 @@ const ProfileImage = styled.img`
   transform: scale(1.1);
 `;
 
-const CollapsibleSection = ({ title, children }) => {
-  const [isOpen, setIsOpen] = useState(true);
+const CollapsibleSection = ({ title, children, defaultOpen = false }) => {
+  const [isOpen, setIsOpen] = useState(defaultOpen);
 
   return (
     <div>
@@ -290,7 +290,7 @@ const AboutMe = () => {
         <InfoSection>
           <Name>BRIGHT OMARI OWUSU</Name>
           
-          <CollapsibleSection title="Profile">
+          <CollapsibleSection title="Profile" defaultOpen={false}>
             <ProfileGrid>
               <ProfileDescription>
                 Let's Collaborate!
@@ -301,7 +301,7 @@ const AboutMe = () => {
             </ProfileGrid>
           </CollapsibleSection>
           
-          <CollapsibleSection title="Education & Background">
+          <CollapsibleSection title="Education & Background" defaultOpen={false}>
             <Education>
               <p>Grambling State University — Grambling, LA, USA</p>
               <p>Bachelor of Science in Cybersecurity Defense Strategy/Policy</p>
@@ -317,7 +317,7 @@ const AboutMe = () => {
             </Education>
           </CollapsibleSection>
 
-          <CollapsibleSection title="Technical Expertise">
+          <CollapsibleSection title="Technical Expertise" defaultOpen={true}>
             <div>
               <h4 style={{ marginTop: '1rem', marginBottom: '0.5rem', color: '#4169E1' }}>Languages</h4>
               <SkillsContainer>
