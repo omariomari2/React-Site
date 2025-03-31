@@ -110,11 +110,13 @@ function App() {
         <Header />
         <SolarSystem />
         
-        <Section id="about">
-          <SectionTitle>About Me</SectionTitle>
-          <SectionContent>
-            <AboutMe />
-          </SectionContent>
+        <Section id="home">
+          <Section id="about">
+            <SectionTitle>About Me</SectionTitle>
+            <SectionContent>
+              <AboutMe />
+            </SectionContent>
+          </Section>
         </Section>
         
         <Section id="projects">

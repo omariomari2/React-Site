@@ -196,7 +196,7 @@ const ResumeButton = styled.a`
   align-items: center;
   justify-content: center;
   margin-bottom: 2vh;
-  font-size: 5rem;
+  font-size: 9rem;
   background: none;
   border: none;
   cursor: pointer;
@@ -214,7 +214,7 @@ const ResumeButton = styled.a`
   &::before {
     content: '';
     position: absolute;
-    top: 100%;
+    top: 78%;
     left: 50%;
     transform: translateX(-50%);
     width: 30px;
@@ -345,6 +345,72 @@ const ContentContainer = styled.div`
   padding-top: calc(25vh + 8rem); /* Add space for the fixed welcome message */
 `;
 
+const Navigation = styled.nav`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.9);
+  backdrop-filter: blur(10px);
+  z-index: 1000;
+  padding: 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+
+  @media (max-width: 768px) {
+    padding: 0.5rem;
+  }
+`;
+
+const NavList = styled.ul`
+  display: flex;
+  gap: 2rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  flex-wrap: wrap;
+  justify-content: center;
+
+  @media (max-width: 768px) {
+    gap: 1rem;
+  }
+`;
+
+const NavLink = styled.a`
+  color: #fff;
+  text-decoration: none;
+  font-size: 1.1rem;
+  font-weight: 500;
+  transition: color 0.3s ease;
+  position: relative;
+  padding: 0.5rem 1rem;
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: #4169E1;
+    transition: width 0.3s ease;
+  }
+
+  &:hover {
+    color: #4169E1;
+    &::after {
+      width: 100%;
+    }
+  }
+
+  @media (max-width: 768px) {
+    font-size: 1rem;
+    padding: 0.5rem;
+  }
+`;
+
 const Header = () => {
   const [typewriterIndex, setTypewriterIndex] = useState(0);
   const [isWaiting, setIsWaiting] = useState(false);
@@ -360,6 +426,13 @@ const Header = () => {
     "+=I'm also/*hu;mam!!, +/-* Human!",
     "Very Human!! 👽"
   ], []);
+
+  const handleScroll = (section) => {
+    const target = document.getElementById(section);
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
   useEffect(() => {
     let timer;
@@ -386,19 +459,30 @@ const Header = () => {
   }, [typewriterIndex, typewriterTexts.length, isWaiting]);
 
   return (
-    <HeaderContainer>
-      <ContentContainer>
-        <ResumeButton href="/owusuomaribright_resume.docx.pdf" download>
-          🛸
-        </ResumeButton>
-        <WelcomeMessage>Welcome Into My Universe</WelcomeMessage>
-        <TypewriterContainer>
-          <TypewriterText key={typewriterIndex} isWaiting={isWaiting}>
-            {typewriterTexts[typewriterIndex]}
-          </TypewriterText>
-        </TypewriterContainer>
-      </ContentContainer>
-    </HeaderContainer>
+    <>
+      <Navigation>
+        <NavList>
+          <NavLink onClick={() => handleScroll('home')} href="#home">Home</NavLink>
+          <NavLink onClick={() => handleScroll('projects')} href="#projects">Projects</NavLink>
+          <NavLink onClick={() => handleScroll('about')} href="#about">About</NavLink>
+          <NavLink onClick={() => handleScroll('contact')} href="#contact">Contact</NavLink>
+        </NavList>
+      </Navigation>
+
+      <HeaderContainer>
+        <ContentContainer>
+          <ResumeButton href="/owusuomaribright_resume.docx.pdf" download>
+            🛸
+          </ResumeButton>
+          <WelcomeMessage>Dive Into & Explore My Universe</WelcomeMessage>
+          <TypewriterContainer>
+            <TypewriterText key={typewriterIndex} isWaiting={isWaiting}>
+              {typewriterTexts[typewriterIndex]}
+            </TypewriterText>
+          </TypewriterContainer>
+        </ContentContainer>
+      </HeaderContainer>
+    </>
   );
 };
 
