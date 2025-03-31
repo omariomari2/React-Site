@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { CollapsibleSection } from './AboutMe';
 
 const ExperienceContainer = styled.div`
   width: 100%;
@@ -151,15 +152,16 @@ const Experience = () => {
   return (
     <ExperienceContainer>
       <Timeline>
-        {experiences.map(exp => (
+        {experiences.map((exp, index) => (
           <TimelineItem key={exp.id}>
+            <CollapsibleSection title={exp.title} defaultOpen={false}>
+              <TimelineContent>
+                <CompanyName>{exp.company}</CompanyName>
+                <Period>{exp.period}</Period>
+                <Description>{exp.description}</Description>
+              </TimelineContent>
+            </CollapsibleSection>
             <TimelineDot />
-            <TimelineContent>
-              <JobTitle>{exp.title}</JobTitle>
-              <CompanyName>{exp.company}</CompanyName>
-              <Period>{exp.period}</Period>
-              <Description>{exp.description}</Description>
-            </TimelineContent>
           </TimelineItem>
         ))}
       </Timeline>

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import styled, { keyframes } from 'styled-components';
+import styled, { keyframes, css } from 'styled-components';
 
 const float = keyframes`
   0% {
@@ -179,35 +179,48 @@ const ResumeButton = styled.a`
 
 const SectionHeader = styled.div`
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  cursor: pointer;
+  align-items: center;
   padding: 1rem;
-  background: rgba(65, 105, 225, 0.1);
-  border-radius: 10px;
-  margin-bottom: ${props => props.isOpen ? '1rem' : '0'};
-  transition: all 0.3s ease;
+  background: rgba(10, 10, 40, 0.5);
+  border-radius: 10px 10px 0 0;
+  border: 1px solid rgba(65, 105, 225, 0.3);
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 
   &:hover {
-    background: rgba(65, 105, 225, 0.2);
+    background: rgba(65, 105, 225, 0.1);
   }
 
   h3 {
+    color: #4169E1;
     margin: 0;
+    font-size: 1.2rem;
   }
+
+  ${props => props.isOpen && css`
+    border-bottom: none;
+  `}
 `;
 
 const Arrow = styled.span`
-  transform: ${props => props.isOpen ? 'rotate(180deg)' : 'rotate(0)'};
+  color: #4169E1;
   transition: transform 0.3s ease;
-  font-size: 1.2rem;
+
+  ${props => props.isOpen && css`
+    transform: rotate(180deg);
+  `}
 `;
 
 const SectionContent = styled.div`
-  max-height: ${props => props.isOpen ? '2000px' : '0'};
   overflow: hidden;
-  transition: max-height 0.6s ease;
-  opacity: ${props => props.isOpen ? '1' : '0'};
+  max-height: ${props => props.isOpen ? '1000px' : '0'};
+  transition: max-height 0.3s ease-in-out;
+  background: rgba(10, 10, 40, 0.5);
+  border-radius: 0 0 10px 10px;
+  border: 1px solid rgba(65, 105, 225, 0.3);
+  border-top: none;
+  padding: 1rem;
 `;
 
 const ProfileGrid = styled.div`
@@ -317,7 +330,7 @@ const AboutMe = () => {
             </Education>
           </CollapsibleSection>
 
-          <CollapsibleSection title="Technical Expertise" defaultOpen={true}>
+          <CollapsibleSection title="Technical Expertise" defaultOpen={false}>
             <div>
               <h4 style={{ marginTop: '1rem', marginBottom: '0.5rem', color: '#4169E1' }}>Languages</h4>
               <SkillsContainer>
@@ -362,4 +375,5 @@ const AboutMe = () => {
   );
 };
 
+export { CollapsibleSection };
 export default AboutMe;

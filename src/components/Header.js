@@ -214,7 +214,7 @@ const ResumeButton = styled.a`
   &::before {
     content: '';
     position: absolute;
-    top: 78%;
+    top: 50%;
     left: 50%;
     transform: translateX(-50%);
     width: 30px;
