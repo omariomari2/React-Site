@@ -182,10 +182,9 @@ const ProjectDescription = styled.p`
   margin-bottom: 20px;
   line-height: 1.6;
   transition: all 0.3s ease;
-  
   @media (max-width: 768px) {
     max-height: 100px;
-    overflow-y: auto;
+    overflow-y: hidden;
   }
 `;
 
@@ -294,7 +293,7 @@ const Projects = () => {
       id: 1,
       type: "Chrome Extension",
       title: "Pomodoro Play",
-      description: "•  Designed and implemented a Chrome extension leveraging the Pomodoro Technique, integrating timers, ambient music, and mini-games to create an engaging work-break balance.\n\n•  Enhanced functionality by incorporating features like tab tracking, video bookmarking, to-do lists, and reminders, offering a comprehensive tool to improve productivity and study efficiency",
+      description: "An all-in-one Chrome extension leveraging the Pomodoro Technique, integrating timers, ambient music, mini-games and features like tab tracking, video bookmarking, to-do lists to create an engaging work-break balance and enhance productivity",
       tech: ["JavaScript", "JSON", "Chrome API"],
       link: "https://github.com/omariomari2/Pomodoro-Play.git"
     },

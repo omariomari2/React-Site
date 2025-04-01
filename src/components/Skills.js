@@ -82,6 +82,45 @@ const SkillLevel = styled.div`
   }
 `;
 
+const ProjectCard = styled.div`
+  width: 100%;
+  min-height: 700px;
+  background-color: ${({ theme }) => theme.card};
+  cursor: pointer;
+  border-radius: 10px;
+  box-shadow: 0 0 12px 4px rgba(0, 0, 0, 0.4);
+  overflow: hidden;
+  padding: 26px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  transition: all 0.5s ease-in-out;
+  margin-bottom: 30px;
+  position: relative;
+  
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0 20px 4px rgba(0, 0, 0, 0.6);
+  }
+`;
+
+const ProjectsContainer = styled.div`
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+  perspective: 1000px;
+  
+  @media (max-width: 960px) {
+    gap: 20px;
+  }
+`;
+
 const Skills = () => {
   const skillCategories = [
     {
