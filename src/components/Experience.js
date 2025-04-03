@@ -93,12 +93,6 @@ const TimelineDot = styled.div`
   }
 `;
 
-const JobTitle = styled.h3`
-  color: #4169E1;
-  margin-bottom: 10px;
-  font-size: 1.4rem;
-`;
-
 const CompanyName = styled.h4`
   color: #E0E0FF;
   margin-bottom: 10px;
