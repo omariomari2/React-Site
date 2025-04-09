@@ -30,18 +30,6 @@ const fadeOut = keyframes`
   to { opacity: 0; }
 `;
 
-const bounce = keyframes`
-  0%, 20%, 50%, 80%, 100% {
-    transform: translateY(0);
-  }
-  40% {
-    transform: translateY(-10px);
-  }
-  60% {
-    transform: translateY(-5px);
-  }
-`;
-
 const HeaderContainer = styled.div`
   position: relative;
   width: 100%;
