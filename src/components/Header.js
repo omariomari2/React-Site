@@ -25,10 +25,6 @@ const blink = keyframes`
   50% { border-color: #4169E1 }
 `;
 
-const fadeOut = keyframes`
-  from { opacity: 1; }
-  to { opacity: 0; }
-`;
 
 const HeaderContainer = styled.div`
   position: relative;
@@ -56,7 +52,7 @@ const HeaderContainer = styled.div`
 `;
 
 const SpaceshipModel = () => {
-  const { scene } = useGLTF('project_images/cute_astronaut.glb');
+  const { scene } = useGLTF('project_images/cute_astronaut1.glb');
   
   useEffect(() => {
     scene.traverse((node) => {
@@ -71,16 +67,16 @@ const SpaceshipModel = () => {
     });
   }, [scene]);
 
-  return <primitive object={scene} scale={60} position={[0, -3.1, 0]} rotation={[0, Math.PI / 4, 0]} />;
+  return <primitive object={scene} scale={90} position={[0, -7, 0]} rotation={[0, Math.PI / 20, 0]} />;
 };
 
 const ResumeButtonContainer = styled.a`
   position: relative;
   width: 400px;
-  height: 400px;
-  margin-bottom: 2vh;
+  height: 800px;
+  margin-bottom: 10vh;
   cursor: pointer;
-  animation: ${float} 6s ease-in-out infinite;
+  animation: ${float} 4s ease-in-out infinite;
   display: block;
 `;
 
@@ -163,8 +159,8 @@ const TypewriterText = styled.div`
   display: inline-block;
   position: relative;
   animation: 
-    ${typewriter} 1.5s steps(40, end) forwards,
-    ${props => props.isWaiting ? fadeOut : 'none'} 0.5s ease forwards,
+    ${typewriter} 2s steps(50, end) forwards,
+    ${props => props.isWaiting ? 'none' : 'none'} 0.5s ease forwards,
     ${blink} 0.75s step-end infinite;
   border-right: 3px solid #4169E1;
   
@@ -204,8 +200,8 @@ const Header = () => {
       setTimeout(() => {
         setTypewriterIndex((prev) => (prev + 1) % typewriterTexts.length);
         setIsWaiting(false);
-      }, 500);
-    }, 2000);
+      }, 3000); // Wait 3 seconds before showing next text
+    }, 3000); // Wait 3 seconds after typing is complete
 
     return () => clearTimeout(timer);
   }, [typewriterIndex, typewriterTexts]);

@@ -5,7 +5,6 @@ import AboutMe from './components/AboutMe';
 import Experience from './components/Experience';
 import Projects from './components/Projects';
 import Contact from './components/Contact';
-import SolarSystem from './components/SolarSystem';
 import Navigation from './components/Navigation';
 import Rocket from './components/Rocket';
 import Footer from './components/Footer';
