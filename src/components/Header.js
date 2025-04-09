@@ -53,6 +53,7 @@ const HeaderContainer = styled.div`
 
 const SpaceshipModel = () => {
   const { scene } = useGLTF('project_images/cute_astronaut1.glb');
+  const isMobile = window.innerWidth <= 768;
   
   useEffect(() => {
     scene.traverse((node) => {
@@ -67,7 +68,10 @@ const SpaceshipModel = () => {
     });
   }, [scene]);
 
-  return <primitive object={scene} scale={90} position={[0, -7, 0]} rotation={[0, Math.PI / 20, 0]} />;
+  const position = isMobile ? [0, -3, 0] : [0, -7, 0];
+  const scale = isMobile ? 45 : 90;
+
+  return <primitive object={scene} scale={scale} position={position} rotation={[0, Math.PI / 20, 0]} />;
 };
 
 const ResumeButtonContainer = styled.a`
