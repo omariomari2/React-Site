@@ -1,16 +1,17 @@
 import React from 'react';
 import styled, { keyframes } from 'styled-components';
 import Header from './components/Header';
-import SolarSystem from './components/SolarSystem';
 import AboutMe from './components/AboutMe';
-import Projects from './components/Projects';
-import Skills from './components/Skills';
 import Experience from './components/Experience';
-import Education from './components/Education';
+import Projects from './components/Projects';
 import Contact from './components/Contact';
-import Research from './components/Research';
+import SolarSystem from './components/SolarSystem';
+import Navigation from './components/Navigation';
 import Rocket from './components/Rocket';
 import Footer from './components/Footer';
+import Education from './components/Education';
+import Research from './components/Research';
+import Skills from './components/Skills';
 
 const AppContainer = styled.div`
   width: 100%;
@@ -29,28 +30,20 @@ const AppContainer = styled.div`
   z-index: 2;
 `;
 
+const StarsAnimation = keyframes`
+  from { transform: translate(0, 0); }
+  to { transform: translate(-50px, -50px); }
+`;
+
 const StarsBackground = styled.div`
   position: fixed;
-  width: 100%;
-  height: 100%;
   top: 0;
   left: 0;
-  z-index: -1;
-  background: black;
-  overflow: hidden;
-  
-  &::before {
-    content: '';
-    position: absolute;
-    width: 200%;
-    height: 200%;
-    background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
-    background-size: 50px 50px;
-    animation: ${keyframes`
-      from { transform: translate(0, 0); }
-      to { transform: translate(-50px, -50px); }
-    `} 60s linear infinite;
-  }
+  width: 100%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+  background-size: 50px 50px;
+  animation: ${StarsAnimation} 60s linear infinite;
 `;
 
 const Section = styled.section`
@@ -62,10 +55,6 @@ const Section = styled.section`
   align-items: center;
   position: relative;
   z-index: 2;
-  
-  &#about {
-    padding-top: 20px;
-  }
 `;
 
 const SectionTitle = styled.h2`
@@ -103,67 +92,71 @@ const SectionContent = styled.div`
 
 function App() {
   return (
-    <div className="App">
+    <AppContainer>
+      <Navigation />
       <StarsBackground />
       <Rocket />
-      <AppContainer>
+      <section id="home">
         <Header />
-        <SolarSystem />
-        
-        <Section id="home">
-          <Section id="about">
-            <SectionTitle>About Me</SectionTitle>
-            <SectionContent>
-              <AboutMe />
-            </SectionContent>
-          </Section>
-        </Section>
-        
-        <Section id="projects">
-          <SectionTitle>Projects</SectionTitle>
+      </section>
+      <section id="about">
+        <Section>
+          <SectionTitle>About Me</SectionTitle>
           <SectionContent>
-            <Projects />
+            <AboutMe />
           </SectionContent>
         </Section>
-        
-        <Section id="skills">
-          <SectionTitle>Skills</SectionTitle>
-          <SectionContent>
-            <Skills />
-          </SectionContent>
-        </Section>
-        
-        <Section id="experience">
+      </section>
+      <section id="experience">
+        <Section>
           <SectionTitle>Experience</SectionTitle>
           <SectionContent>
             <Experience />
           </SectionContent>
         </Section>
-        
-        <Section id="education">
+      </section>
+      <section id="projects">
+        <Section>
+          <SectionTitle>Projects</SectionTitle>
+          <SectionContent>
+            <Projects />
+          </SectionContent>
+        </Section>
+      </section>
+      <section id="skills">
+        <Section>
+          <SectionTitle>Skills</SectionTitle>
+          <SectionContent>
+            <Skills />
+          </SectionContent>
+        </Section>
+      </section>
+      <section id="education">
+        <Section>
           <SectionTitle>Education</SectionTitle>
           <SectionContent>
             <Education />
           </SectionContent>
         </Section>
-        
-        <Section id="research">
+      </section>
+      <section id="research">
+        <Section>
           <SectionTitle>Research</SectionTitle>
           <SectionContent>
             <Research />
           </SectionContent>
         </Section>
-        
-        <Section id="contact">
+      </section>
+      <section id="contact">
+        <Section>
           <SectionTitle>Contact</SectionTitle>
           <SectionContent>
             <Contact />
           </SectionContent>
         </Section>
-        
-        <Footer />
-      </AppContainer>
-    </div>
+      </section>
+      <Footer />
+    </AppContainer>
   );
 }
 

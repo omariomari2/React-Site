@@ -55,8 +55,8 @@ const HeaderContainer = styled.div`
   }
 `;
 
-const AstronautModel = () => {
-  const { scene } = useGLTF('/project_images/cute_astronaut.glb');
+const SpaceshipModel = () => {
+  const { scene } = useGLTF('project_images/cute_astronaut.glb');
   
   useEffect(() => {
     scene.traverse((node) => {
@@ -71,16 +71,17 @@ const AstronautModel = () => {
     });
   }, [scene]);
 
-  return <primitive object={scene} scale={2} position={[0, -1, 0]} />;
+  return <primitive object={scene} scale={60} position={[0, -3.1, 0]} rotation={[0, Math.PI / 4, 0]} />;
 };
 
-const ResumeButtonContainer = styled.div`
+const ResumeButtonContainer = styled.a`
   position: relative;
   width: 400px;
   height: 400px;
   margin-bottom: 2vh;
   cursor: pointer;
   animation: ${float} 6s ease-in-out infinite;
+  display: block;
 `;
 
 const ModelCanvas = styled(Canvas)`
@@ -91,7 +92,7 @@ const ModelCanvas = styled(Canvas)`
 `;
 
 const WelcomeMessage = styled.h1`
-  font-size: 6rem;
+  font-size: 8rem;
   font-weight: 900;
   text-align: center;
   color: #fff;
@@ -140,7 +141,7 @@ const WelcomeMessage = styled.h1`
   }
   
   @media (max-width: 768px) {
-    font-size: 3.5rem;
+    font-size: 4.5rem;
   }
 `;
 
@@ -212,8 +213,9 @@ const Header = () => {
   return (
     <HeaderContainer>
       <ContentContainer>
-        <ResumeButtonContainer>
+        <ResumeButtonContainer href="/owusuomaribright_resume.docx.pdf" target="_blank" rel="noopener noreferrer">
           <ModelCanvas
+            camera={{ position: [0, 0, 10], fov: 45 }}
             shadows
           >
             <ambientLight intensity={1.5} />
@@ -233,12 +235,12 @@ const Header = () => {
               castShadow
             />
             <Suspense fallback={null}>
-              <AstronautModel />
+              <SpaceshipModel />
               <OrbitControls
                 enableZoom={false}
                 enablePan={false}
                 autoRotate
-                autoRotateSpeed={5}
+                autoRotateSpeed={3}
                 minPolarAngle={Math.PI / 3}
                 maxPolarAngle={Math.PI / 1.5}
                 rotateSpeed={5}
