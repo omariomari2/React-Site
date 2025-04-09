@@ -2,6 +2,7 @@ import React, { useEffect, useState, useMemo, Suspense } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { Canvas } from '@react-three/fiber';
 import { useGLTF, OrbitControls } from '@react-three/drei';
+import { Link } from 'react-scroll';
 
 const float = keyframes`
   0% {
@@ -62,6 +63,18 @@ const ufoBeam = keyframes`
 const fadeOut = keyframes`
   from { opacity: 1; }
   to { opacity: 0; }
+`;
+
+const bounce = keyframes`
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-20px);
+  }
+  60% {
+    transform: translateY(-10px);
+  }
 `;
 
 const HeaderContainer = styled.div`
@@ -286,6 +299,26 @@ const NavLink = styled.a`
   }
 `;
 
+const ScrollArrow = styled(Link)`
+  position: absolute;
+  bottom: 5vh;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 2.5rem;
+  color: #fff;
+  cursor: pointer;
+  animation: ${bounce} 2s infinite;
+  z-index: 2;
+  text-decoration: none;
+  transition: color 0.3s ease;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+  
+  &:hover {
+    color: #4169E1;
+    text-shadow: 0 0 10px rgba(65, 105, 225, 0.5);
+  }
+`;
+
 const Header = () => {
   const [typewriterIndex, setTypewriterIndex] = useState(0);
   const [isWaiting, setIsWaiting] = useState(false);
@@ -379,6 +412,15 @@ const Header = () => {
             {typewriterTexts[typewriterIndex]}
           </TypewriterText>
         </TypewriterContainer>
+        <ScrollArrow
+          to="about"
+          smooth={true}
+          duration={800}
+          spy={true}
+          offset={-70}
+        >
+          ▼
+        </ScrollArrow>
       </ContentContainer>
     </HeaderContainer>
   );
