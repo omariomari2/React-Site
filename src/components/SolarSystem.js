@@ -16,6 +16,13 @@ const SolarSystemContainer = styled.div`
   }
 `;
 
+const CanvasWrapper = styled.div`
+  width: 100%;
+  height: 100%;
+  position: relative;
+  z-index: 1;
+`;
+
 const InfoPanel = styled.div`
   position: absolute;
   top: 20px;
@@ -606,82 +613,84 @@ function SolarSystem() {
         <ManualInstruction><span>🤏</span>Pinch to zoom</ManualInstruction>
       </ManualPanel>
 
-      <Canvas 
-        camera={{ position: [0, 45, 100], fov: 45 }}
-        gl={{ antialias: true }}
-        onWheel={(e) => e.stopPropagation()}
-      >
-        <ambientLight intensity={0.3} />
-        <pointLight position={[0, 0, 0]} intensity={4} color="#4169E1" />
-        <hemisphereLight intensity={0.3} groundColor="#000066" />
-        <fog attach="fog" args={['#000033', 120, 220]} />
-        
-        {/* Enhanced space background */}
-        <Stars 
-          radius={100} 
-          depth={50} 
-          count={8000}
-          factor={6}
-          saturation={1}
-          fade={true}
-          speed={0.5}
-        />
-        <Stars 
-          radius={120} 
-          depth={70} 
-          count={4000} 
-          factor={4} 
-          saturation={0.8}
-          fade={true}
-          speed={0.2}
-        />
-        <SpaceDebris count={300} />
-        
-        {/* Cybersecurity-themed elements */}
-        <DataStream count={150} />
-        <SecurityGrid size={150} divisions={15} />
-        
-        {/* Enhanced nebula clouds */}
-        <Nebula position={[50, 20, -80]} color="#4169E1" scale={35} />
-        <Nebula position={[-60, -10, -100]} color="#9C27B0" scale={45} />
-        <Nebula position={[0, -30, -60]} color="#2196F3" scale={30} />
-        <Nebula position={[80, 0, -90]} color="#673AB7" scale={40} />
+      <CanvasWrapper>
+        <Canvas 
+          camera={{ position: [0, 45, 100], fov: 45 }}
+          gl={{ antialias: true }}
+          onWheel={(e) => e.stopPropagation()}
+        >
+          <ambientLight intensity={0.3} />
+          <pointLight position={[0, 0, 0]} intensity={4} color="#4169E1" />
+          <hemisphereLight intensity={0.3} groundColor="#000066" />
+          <fog attach="fog" args={['#000033', 120, 220]} />
+          
+          {/* Enhanced space background */}
+          <Stars 
+            radius={100} 
+            depth={50} 
+            count={8000}
+            factor={6}
+            saturation={1}
+            fade={true}
+            speed={0.5}
+          />
+          <Stars 
+            radius={120} 
+            depth={70} 
+            count={4000} 
+            factor={4} 
+            saturation={0.8}
+            fade={true}
+            speed={0.2}
+          />
+          <SpaceDebris count={300} />
+          
+          {/* Cybersecurity-themed elements */}
+          <DataStream count={150} />
+          <SecurityGrid size={150} divisions={15} />
+          
+          {/* Enhanced nebula clouds */}
+          <Nebula position={[50, 20, -80]} color="#4169E1" scale={35} />
+          <Nebula position={[-60, -10, -100]} color="#9C27B0" scale={45} />
+          <Nebula position={[0, -30, -60]} color="#2196F3" scale={30} />
+          <Nebula position={[80, 0, -90]} color="#673AB7" scale={40} />
 
-        {/* Asteroid belts */}
-        <AsteroidBelt radius={28} count={200} />
-        <AsteroidBelt radius={32} count={180} />
-        
-        {/* Rotating system with all planets */}
-        <RotatingSystem 
-          planets={planets}
-          activePlanet={activePlanet}
-          handlePlanetClick={handlePlanetClick}
-        />
+          {/* Asteroid belts */}
+          <AsteroidBelt radius={28} count={200} />
+          <AsteroidBelt radius={32} count={180} />
+          
+          {/* Rotating system with all planets */}
+          <RotatingSystem 
+            planets={planets}
+            activePlanet={activePlanet}
+            handlePlanetClick={handlePlanetClick}
+          />
 
-        <OrbitControls
-          enableZoom={true}
-          enablePan={true}
-          enableRotate={true}
-          zoomSpeed={0.6}
-          panSpeed={0.5}
-          rotateSpeed={0.5}
-          minDistance={30}
-          maxDistance={180}
-          maxPolarAngle={Math.PI / 2}
-          minPolarAngle={Math.PI / 4}
-          mouseButtons={{
-            LEFT: THREE.MOUSE.ROTATE,
-            MIDDLE: THREE.MOUSE.PAN,
-            RIGHT: THREE.MOUSE.PAN
-          }}
-          touches={{
-            ONE: THREE.TOUCH.ROTATE,
-            TWO: THREE.TOUCH.DOLLY_PAN
-          }}
-          enableZoomWithWheel={false}
-          onWheel={(e) => e.preventDefault()}
-        />
-      </Canvas>
+          <OrbitControls
+            enableZoom={true}
+            enablePan={true}
+            enableRotate={true}
+            zoomSpeed={0.6}
+            panSpeed={0.5}
+            rotateSpeed={0.5}
+            minDistance={30}
+            maxDistance={180}
+            maxPolarAngle={Math.PI / 2}
+            minPolarAngle={Math.PI / 4}
+            mouseButtons={{
+              LEFT: THREE.MOUSE.ROTATE,
+              MIDDLE: THREE.MOUSE.PAN,
+              RIGHT: THREE.MOUSE.PAN
+            }}
+            touches={{
+              ONE: THREE.TOUCH.ROTATE,
+              TWO: THREE.TOUCH.DOLLY_PAN
+            }}
+            enableZoomWithWheel={false}
+            onWheel={(e) => e.preventDefault()}
+          />
+        </Canvas>
+      </CanvasWrapper>
     </SolarSystemContainer>
   );
 }

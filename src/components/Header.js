@@ -1,5 +1,7 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo, Suspense } from 'react';
 import styled, { keyframes } from 'styled-components';
+import { Canvas } from '@react-three/fiber';
+import { useGLTF, OrbitControls } from '@react-three/drei';
 
 const float = keyframes`
   0% {
@@ -63,188 +65,63 @@ const fadeOut = keyframes`
 `;
 
 const HeaderContainer = styled.div`
+  position: relative;
   width: 100%;
   height: 100vh;
-  background: linear-gradient(to bottom, #000000, #000033);
-  position: relative;
   overflow: hidden;
-  z-index: 1;
+  background: url('/project_images/headerbackground.jpg') no-repeat center center;
+  background-size: cover;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding-top: 5vh;
 
-  &::after {
+  &::before {
     content: '';
     position: absolute;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
-    background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
-    background-size: 3px 3px;
-    opacity: 0.8;
-    pointer-events: none;
-  }
-
-  &::before, &::after {
-    content: '';
-    position: absolute;
-    width: 2px;
-    height: 2px;
-    background: transparent;
-    opacity: 0.7;
-  }
-
-  &::before {
-    box-shadow: 
-      1744px 122px #FFF,
-      134px 1321px #FFF,
-      1882px 812px #FFF,
-      1703px 1537px #FFF,
-      1432px 675px #FFF,
-      1575px 1260px #FFF,
-      1087px 1614px #FFF,
-      1268px 461px #FFF,
-      1034px 1726px #FFF,
-      1457px 1636px #FFF,
-      747px 1328px #FFF,
-      1118px 1764px #FFF,
-      1323px 1255px #FFF,
-      244px 1268px #FFF,
-      1193px 1622px #FFF,
-      1313px 1653px #FFF,
-      139px 1579px #FFF,
-      545px 1430px #FFF,
-      1731px 1076px #FFF,
-      598px 1645px #FFF,
-      1131px 1905px #FFF,
-      1716px 1022px #FFF,
-      1075px 1275px #FFF,
-      1416px 897px #FFF,
-      1105px 1175px #FFF,
-      1478px 1208px #FFF,
-      1312px 1554px #FFF,
-      1794px 1042px #FFF,
-      1383px 1505px #FFF,
-      1497px 1300px #FFF,
-      1489px 1873px #FFF,
-      1437px 1075px #FFF,
-      1452px 1416px #FFF,
-      1775px 1473px #FFF,
-      1560px 1098px #FFF,
-      1316px 1216px #FFF,
-      987px 1064px #FFF,
-      1179px 1029px #FFF,
-      1576px 1238px #FFF,
-      1392px 1451px #FFF;
-  }
-
-  &::after {
-    box-shadow:
-      834px 589px #FFF,
-      892px 934px #FFF,
-      1547px 847px #FFF,
-      1428px 578px #FFF,
-      1824px 392px #FFF,
-      1801px 1523px #FFF,
-      267px 1165px #FFF,
-      1034px 1163px #FFF,
-      1848px 1055px #FFF,
-      1371px 782px #FFF,
-      1385px 1738px #FFF,
-      1057px 484px #FFF,
-      1751px 1410px #FFF,
-      1654px 1362px #FFF,
-      1161px 1213px #FFF,
-      503px 1764px #FFF,
-      1159px 1043px #FFF,
-      1824px 1525px #FFF,
-      1563px 1033px #FFF,
-      77px 1455px #FFF,
-      1678px 1140px #FFF,
-      1589px 1465px #FFF,
-      1355px 1905px #FFF,
-      1859px 1015px #FFF,
-      1677px 1622px #FFF,
-      1594px 1912px #FFF,
-      1787px 1373px #FFF,
-      1633px 1633px #FFF,
-      1901px 1152px #FFF,
-      1517px 1784px #FFF,
-      1476px 1145px #FFF,
-      1789px 1154px #FFF,
-      458px 1873px #FFF,
-      944px 1542px #FFF,
-      1043px 1843px #FFF,
-      1085px 1574px #FFF,
-      1290px 1655px #FFF,
-      1389px 1829px #FFF,
-      1789px 1598px #FFF,
-      1468px 1649px #FFF,
-      1017px 1823px #FFF,
-      1145px 1305px #FFF,
-      1898px 1227px #FFF,
-      1728px 1404px #FFF,
-      1228px 1090px #FFF,
-      1055px 1043px #FFF,
-      1337px 1427px #FFF,
-      1476px 1667px #FFF,
-      1596px 1659px #FFF,
-      1894px 1234px #FFF;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 0;
   }
 `;
 
-const ResumeButton = styled.a`
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 2vh;
-  font-size: 9rem;
-  background: none;
-  border: none;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  text-decoration: none;
+const AstronautModel = () => {
+  const { scene } = useGLTF('/project_images/cute_astronaut.glb');
+  
+  useEffect(() => {
+    scene.traverse((node) => {
+      if (node.isMesh) {
+        node.castShadow = true;
+        node.receiveShadow = true;
+        if (node.material) {
+          node.material.emissiveIntensity = 1;
+          node.material.toneMapped = false;
+        }
+      }
+    });
+  }, [scene]);
+
+  return <primitive object={scene} scale={2} position={[0, -1, 0]} />;
+};
+
+const ResumeButtonContainer = styled.div`
   position: relative;
-  z-index: 3;
-  animation: ${ufoHover} 3s ease-in-out infinite;
-  text-shadow: 0 0 10px #4169E1, 0 0 20px #4169E1;
-  
-  &:hover {
-    text-shadow: 0 0 20px #4169E1, 0 0 40px #4169E1;
-  }
-  
-  &::before {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 30px;
-    height: 0;
-    background: linear-gradient(to bottom, rgba(65, 105, 225, 0.8), transparent);
-    opacity: 0;
-    border-radius: 50% 50% 0 0;
-    z-index: -1;
-    animation: ${ufoBeam} 4s ease-in-out infinite;
-  }
-  
-  &:hover::before {
-    animation: ${ufoBeam} 2s ease-in-out infinite;
-  }
-  
-  &::after {
-    content: 'Resume';
-    position: absolute;
-    bottom: -2rem;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 1.2rem;
-    color: #fff;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-  }
-  
-  &:hover::after {
-    opacity: 1;
-  }
+  width: 400px;
+  height: 400px;
+  margin-bottom: 2vh;
+  cursor: pointer;
+  animation: ${float} 6s ease-in-out infinite;
+`;
+
+const ModelCanvas = styled(Canvas)`
+  width: 100% !important;
+  height: 100% !important;
+  position: relative;
+  z-index: 2;
 `;
 
 const WelcomeMessage = styled.h1`
@@ -260,10 +137,8 @@ const WelcomeMessage = styled.h1`
   top: 25vh;
   left: 0;
   width: 100%;
-  z-index: -999;
+  z-index: -9999;
   padding: 1rem 0;
-  background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(5px);
   transition: all 0.3s ease;
   pointer-events: none;
   
@@ -341,7 +216,7 @@ const ContentContainer = styled.div`
   height: 100%;
   width: 100%;
   position: relative;
-  z-index: 2;
+  z-index: 1;
   padding-top: calc(25vh + 8rem); /* Add space for the fixed welcome message */
 `;
 
@@ -459,30 +334,53 @@ const Header = () => {
   }, [typewriterIndex, typewriterTexts.length, isWaiting]);
 
   return (
-    <>
-      <Navigation>
-        <NavList>
-          <NavLink onClick={() => handleScroll('home')} href="#home">Home</NavLink>
-          <NavLink onClick={() => handleScroll('projects')} href="#projects">Projects</NavLink>
-          <NavLink onClick={() => handleScroll('about')} href="#about">About</NavLink>
-          <NavLink onClick={() => handleScroll('contact')} href="#contact">Contact</NavLink>
-        </NavList>
-      </Navigation>
-
-      <HeaderContainer>
-        <ContentContainer>
-          <ResumeButton href="/owusuomaribright_resume.docx.pdf" download>
-            🛸
-          </ResumeButton>
-          <WelcomeMessage>Dive Into & Explore My Universe</WelcomeMessage>
-          <TypewriterContainer>
-            <TypewriterText key={typewriterIndex} isWaiting={isWaiting}>
-              {typewriterTexts[typewriterIndex]}
-            </TypewriterText>
-          </TypewriterContainer>
-        </ContentContainer>
-      </HeaderContainer>
-    </>
+    <HeaderContainer>
+      <ContentContainer>
+        <ResumeButtonContainer as="a" href="/owusuomaribright_resume.docx.pdf" target="_blank" rel="noopener noreferrer">
+          <ModelCanvas
+            camera={{ position: [0, 0, 10], fov: 45 }}
+            shadows
+          >
+            <ambientLight intensity={1.5} />
+            <directionalLight
+              position={[0, 5, 5]}
+              intensity={2.5}
+              castShadow
+              color="#ffffff"
+            />
+            <pointLight position={[-3, 0, 3]} intensity={1.5} color="#4169E1" />
+            <pointLight position={[3, 0, 3]} intensity={1.5} color="#ff69b4" />
+            <spotLight
+              position={[0, 10, 0]}
+              angle={0.5}
+              penumbra={1}
+              intensity={2}
+              castShadow
+            />
+            <Suspense fallback={null}>
+              <AstronautModel />
+              <OrbitControls
+                enableZoom={false}
+                enablePan={false}
+                autoRotate
+                autoRotateSpeed={5}
+                minPolarAngle={Math.PI / 3}
+                maxPolarAngle={Math.PI / 1.5}
+                rotateSpeed={5}
+                dampingFactor={0.05}
+                enableDamping
+              />
+            </Suspense>
+          </ModelCanvas>
+        </ResumeButtonContainer>
+        <WelcomeMessage>Dive Into & Explore My Universe</WelcomeMessage>
+        <TypewriterContainer>
+          <TypewriterText key={typewriterIndex} isWaiting={isWaiting}>
+            {typewriterTexts[typewriterIndex]}
+          </TypewriterText>
+        </TypewriterContainer>
+      </ContentContainer>
+    </HeaderContainer>
   );
 };
 
