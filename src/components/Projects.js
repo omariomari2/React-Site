@@ -58,7 +58,8 @@ const Comet = styled.div`
 const ProjectCard = styled.div`
   position: relative;
   width: 100%;
-  height: 300px;
+  height: 450px;
+  min-height: 450px;
   border-radius: 10px;
   overflow: hidden;
   transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
