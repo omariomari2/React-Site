@@ -730,7 +730,8 @@ function SolarSystem() {
               TWO: THREE.TOUCH.DOLLY_PAN
             }}
             enableZoomWithWheel={false}
-            onWheel={(e) => e.preventDefault()}
+            enableDamping={true}
+            dampingFactor={0.05}
           />
         </Canvas>
       </CanvasWrapper>

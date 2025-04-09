@@ -11,6 +11,7 @@ import Footer from './components/Footer';
 import Education from './components/Education';
 import Research from './components/Research';
 import Skills from './components/Skills';
+import SolarSystem from './components/SolarSystem';
 
 const AppContainer = styled.div`
   width: 100%;
@@ -97,6 +98,7 @@ function App() {
       <Rocket />
       <section id="home">
         <Header />
+        <SolarSystem />
       </section>
       <section id="about">
         <Section>
