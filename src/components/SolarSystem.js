@@ -2,7 +2,20 @@ import React, { useRef, useState, useMemo } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, Stars, Html } from '@react-three/drei';
 import * as THREE from 'three';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
+import { Link } from 'react-scroll';
+
+const bounce = keyframes`
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-10px);
+  }
+  60% {
+    transform: translateY(-5px);
+  }
+`;
 
 const SolarSystemContainer = styled.div`
   width: 100%;
@@ -131,6 +144,26 @@ const PlanetLabel = styled.div`
   opacity: ${props => props.isActive ? '1' : '0.8'};
   transition: opacity 0.3s ease;
   cursor: pointer;
+`;
+
+const ScrollArrow = styled(Link)`
+  position: absolute;
+  bottom: 5vh;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 2.5rem;
+  color: #fff;
+  cursor: pointer;
+  animation: ${bounce} 3s ease-in-out infinite;
+  z-index: 2;
+  text-decoration: none;
+  transition: color 0.3s ease;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+  
+  &:hover {
+    color: #4169E1;
+    text-shadow: 0 0 10px rgba(65, 105, 225, 0.5);
+  }
 `;
 
 function RotatingPlanet({ position, size, color, name, section, onClick, isActive }) {
@@ -612,6 +645,16 @@ function SolarSystem() {
         <ManualInstruction><span>👆</span>Drag to rotate</ManualInstruction>
         <ManualInstruction><span>🤏</span>Pinch to zoom</ManualInstruction>
       </ManualPanel>
+
+      <ScrollArrow
+        to="about"
+        smooth={true}
+        duration={800}
+        spy={true}
+        offset={-70}
+      >
+        ▼
+      </ScrollArrow>
 
       <CanvasWrapper>
         <Canvas 

@@ -2,7 +2,6 @@ import React, { useEffect, useState, useMemo, Suspense } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { Canvas } from '@react-three/fiber';
 import { useGLTF, OrbitControls } from '@react-three/drei';
-import { Link } from 'react-scroll';
 
 const float = keyframes`
   0% {
@@ -26,40 +25,6 @@ const blink = keyframes`
   50% { border-color: #4169E1 }
 `;
 
-const ufoHover = keyframes`
-  0% {
-    transform: translateY(0) rotate(0deg);
-    box-shadow: 0 0 5px rgba(65, 105, 225, 0.3);
-  }
-  25% {
-    transform: translateY(-10px) rotate(-5deg);
-    box-shadow: 0 0 15px rgba(65, 105, 225, 0.5);
-  }
-  50% {
-    transform: translateY(-15px) rotate(0deg);
-    box-shadow: 0 0 25px rgba(65, 105, 225, 0.7);
-  }
-  75% {
-    transform: translateY(-10px) rotate(5deg);
-    box-shadow: 0 0 15px rgba(65, 105, 225, 0.5);
-  }
-  100% {
-    transform: translateY(0) rotate(0deg);
-    box-shadow: 0 0 5px rgba(65, 105, 225, 0.3);
-  }
-`;
-
-const ufoBeam = keyframes`
-  0%, 100% {
-    opacity: 0;
-    height: 0;
-  }
-  50% {
-    opacity: 0.7;
-    height: 100px;
-  }
-`;
-
 const fadeOut = keyframes`
   from { opacity: 1; }
   to { opacity: 0; }
@@ -70,10 +35,10 @@ const bounce = keyframes`
     transform: translateY(0);
   }
   40% {
-    transform: translateY(-20px);
+    transform: translateY(-10px);
   }
   60% {
-    transform: translateY(-10px);
+    transform: translateY(-5px);
   }
 `;
 
@@ -233,145 +198,34 @@ const ContentContainer = styled.div`
   padding-top: calc(25vh + 8rem); /* Add space for the fixed welcome message */
 `;
 
-const Navigation = styled.nav`
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  background: rgba(0, 0, 0, 0.9);
-  backdrop-filter: blur(10px);
-  z-index: 1000;
-  padding: 1rem;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-
-  @media (max-width: 768px) {
-    padding: 0.5rem;
-  }
-`;
-
-const NavList = styled.ul`
-  display: flex;
-  gap: 2rem;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  flex-wrap: wrap;
-  justify-content: center;
-
-  @media (max-width: 768px) {
-    gap: 1rem;
-  }
-`;
-
-const NavLink = styled.a`
-  color: #fff;
-  text-decoration: none;
-  font-size: 1.1rem;
-  font-weight: 500;
-  transition: color 0.3s ease;
-  position: relative;
-  padding: 0.5rem 1rem;
-
-  &::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 0;
-    height: 2px;
-    background: #4169E1;
-    transition: width 0.3s ease;
-  }
-
-  &:hover {
-    color: #4169E1;
-    &::after {
-      width: 100%;
-    }
-  }
-
-  @media (max-width: 768px) {
-    font-size: 1rem;
-    padding: 0.5rem;
-  }
-`;
-
-const ScrollArrow = styled(Link)`
-  position: absolute;
-  bottom: 5vh;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 2.5rem;
-  color: #fff;
-  cursor: pointer;
-  animation: ${bounce} 2s infinite;
-  z-index: 2;
-  text-decoration: none;
-  transition: color 0.3s ease;
-  text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
-  
-  &:hover {
-    color: #4169E1;
-    text-shadow: 0 0 10px rgba(65, 105, 225, 0.5);
-  }
-`;
-
 const Header = () => {
   const [typewriterIndex, setTypewriterIndex] = useState(0);
   const [isWaiting, setIsWaiting] = useState(false);
 
   const typewriterTexts = useMemo(() => [
-    "Hi,",
-    "I'm Bright!",
-    "A Full Stack Developer",
-    "A Software Engineer",
-    "A Problem Solver",
-    "And a Huuuge Tech Enthusiast !",
-    " ", 
-    "+=I'm also/*hu;mam!!, +/-* Human!",
-    "Very Human!! 👽"
+    "Full Stack Development 💻",
+    "Cybersecurity🔒",
+    "Software Engineering 🧩",
+    "Cloud Security 🌐"
   ], []);
 
-  const handleScroll = (section) => {
-    const target = document.getElementById(section);
-    if (target) {
-      target.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
-
   useEffect(() => {
-    let timer;
-    
-    const nextText = () => {
-      if (typewriterIndex === typewriterTexts.length - 1) {
-        setIsWaiting(true);
-        timer = setTimeout(() => {
-          setIsWaiting(false);
-          setTypewriterIndex(0);
-        }, 1500);
-      } else {
-        timer = setTimeout(() => {
-          setTypewriterIndex(prevIndex => prevIndex + 1);
-        }, 2000);
-      }
-    };
-
-    if (!isWaiting) {
-      timer = setTimeout(nextText, 2000);
-    }
+    const timer = setTimeout(() => {
+      setIsWaiting(true);
+      setTimeout(() => {
+        setTypewriterIndex((prev) => (prev + 1) % typewriterTexts.length);
+        setIsWaiting(false);
+      }, 500);
+    }, 2000);
 
     return () => clearTimeout(timer);
-  }, [typewriterIndex, typewriterTexts.length, isWaiting]);
+  }, [typewriterIndex, typewriterTexts]);
 
   return (
     <HeaderContainer>
       <ContentContainer>
-        <ResumeButtonContainer as="a" href="/owusuomaribright_resume.docx.pdf" target="_blank" rel="noopener noreferrer">
+        <ResumeButtonContainer>
           <ModelCanvas
-            camera={{ position: [0, 0, 10], fov: 45 }}
             shadows
           >
             <ambientLight intensity={1.5} />
@@ -412,15 +266,6 @@ const Header = () => {
             {typewriterTexts[typewriterIndex]}
           </TypewriterText>
         </TypewriterContainer>
-        <ScrollArrow
-          to="about"
-          smooth={true}
-          duration={800}
-          spy={true}
-          offset={-70}
-        >
-          ▼
-        </ScrollArrow>
       </ContentContainer>
     </HeaderContainer>
   );
