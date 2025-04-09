@@ -68,7 +68,7 @@ const SpaceshipModel = () => {
     });
   }, [scene]);
 
-  const position = isMobile ? [0, -3, 0] : [0, -7, 0];
+  const position = isMobile ? [0, -5, 0] : [0, -7, 0];
   const scale = isMobile ? 45 : 90;
 
   return <primitive object={scene} scale={scale} position={position} rotation={[0, Math.PI / 20, 0]} />;
@@ -213,7 +213,7 @@ const Header = () => {
   return (
     <HeaderContainer>
       <ContentContainer>
-        <ResumeButtonContainer href="/owusuomaribright_resume.docx.pdf" target="_blank" rel="noopener noreferrer">
+        <ResumeButtonContainer target="_blank" rel="noopener noreferrer">
           <ModelCanvas
             camera={{ position: [0, 0, 10], fov: 45 }}
             shadows
