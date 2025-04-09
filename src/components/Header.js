@@ -89,6 +89,11 @@ const ModelCanvas = styled(Canvas)`
   height: 100% !important;
   position: relative;
   z-index: 2;
+  touch-action: none; /* Prevents touch gestures from interfering with webpage scroll */
+  
+  canvas {
+    touch-action: none; /* Prevents OrbitControls from hijacking touch gestures */
+  }
 `;
 
 const WelcomeMessage = styled.h1`
@@ -246,6 +251,9 @@ const Header = () => {
                 rotateSpeed={5}
                 dampingFactor={0.05}
                 enableDamping
+                onPointerDown={(e) => e.stopPropagation()}
+                onPointerMove={(e) => e.stopPropagation()}
+                onPointerUp={(e) => e.stopPropagation()}
               />
             </Suspense>
           </ModelCanvas>

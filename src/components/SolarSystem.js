@@ -34,6 +34,11 @@ const CanvasWrapper = styled.div`
   height: 100%;
   position: relative;
   z-index: 1;
+  touch-action: none; /* Prevents touch gestures from interfering with webpage scroll */
+  
+  canvas {
+    touch-action: none; /* Prevents OrbitControls from hijacking touch gestures */
+  }
 `;
 
 const InfoPanel = styled.div`
@@ -732,6 +737,9 @@ function SolarSystem() {
             enableZoomWithWheel={false}
             enableDamping={true}
             dampingFactor={0.05}
+            onPointerDown={(e) => e.stopPropagation()}
+            onPointerMove={(e) => e.stopPropagation()}
+            onPointerUp={(e) => e.stopPropagation()}
           />
         </Canvas>
       </CanvasWrapper>
