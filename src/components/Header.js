@@ -86,13 +86,22 @@ const ResumeButtonContainer = styled.a`
 
 const ModelCanvas = styled(Canvas)`
   width: 100% !important;
-  height: 100% !important;
+  max-width: 400px !important;
+  height: auto !important;
   position: relative;
   z-index: 2;
-  touch-action: none; /* Prevents touch gestures from interfering with webpage scroll */
+  touch-action: none;
   
   canvas {
-    touch-action: none; /* Prevents OrbitControls from hijacking touch gestures */
+    touch-action: none;
+    width: 100% !important;
+    height: auto !important;
+  }
+
+  @media (max-width: 768px) {
+    width: 100% !important;
+    max-width: 300px !important;
+    height: auto !important;
   }
 `;
 
