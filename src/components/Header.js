@@ -68,7 +68,7 @@ const SpaceshipModel = () => {
     });
   }, [scene]);
 
-  const position = isMobile ? [0, -6, 0] : [0, -7, 0];
+  const position = isMobile ? [0, -6, 2] : [0, -7, 0];
   const scale = isMobile ? 75 : 90;
 
   return <primitive object={scene} scale={scale} position={position} rotation={[0, Math.PI / 20, 0]} />;
