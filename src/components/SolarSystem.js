@@ -1,4 +1,4 @@
-import React, { useRef, useState, useMemo } from 'react';
+import React, { useRef, useState, useMemo, useEffect, useCallback } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, Stars, Html } from '@react-three/drei';
 import * as THREE from 'three';
@@ -134,25 +134,31 @@ const TechTag = styled.span`
   color: #B0B0FF;
 `;
 
-const PlanetLabel = styled.div`
-  color: white;
-  font-size: 12px;
-  font-family: 'Orbitron', sans-serif;
-  background: rgba(0, 0, 0, 0.7);
-  padding: 4px 8px;
-  border-radius: 4px;
-  border: 1px solid rgba(65, 105, 225, 0.3);
-  white-space: nowrap;
-  pointer-events: none;
-  transform: translate3d(-50%, -50%, 0);
-  opacity: ${props => props.isActive ? '1' : '0.8'};
-  transition: opacity 0.3s ease;
-  cursor: pointer;
-`;
+function SaturnRings({ position, planetSize }) {
+  const innerRadius = planetSize * 1.2;
+  const outerRadius = planetSize * 2.2;
+  
+  return (
+    <group position={position}>
+      <mesh rotation={[-Math.PI / 2, 0, 0]}>
+        <ringGeometry args={[innerRadius, outerRadius, 64]} />
+        <meshStandardMaterial
+          color="#E2D4B7"
+          side={THREE.DoubleSide}
+          metalness={0.3}
+          roughness={0.7}
+          transparent={true}
+          opacity={0.8}
+        />
+      </mesh>
+    </group>
+  );
+}
 
-function RotatingPlanet({ position, size, color, name, section, onClick, isActive }) {
+function RotatingPlanet({ position, size, color, name, section, onClick, isActive, hasRings = false }) {
   const meshRef = useRef();
   const glowRef = useRef();
+  const [hovered, setHovered] = useState(false);
   
   useFrame((state, delta) => {
     if (meshRef.current) {
@@ -167,62 +173,69 @@ function RotatingPlanet({ position, size, color, name, section, onClick, isActiv
   const glowColor = isActive ? '#4169E1' : color;
 
   return (
-    <mesh 
-      ref={meshRef} 
-      position={position}
-      onClick={onClick}
-      onPointerOver={(e) => {
-        document.body.style.cursor = 'pointer';
-        e.stopPropagation();
-      }}
-      onPointerOut={() => {
-        document.body.style.cursor = 'default';
-      }}
-    >
-      {/* Outer glow sphere - cybersecurity shield effect */}
-      <mesh ref={glowRef} scale={[1.4, 1.4, 1.4]}>
-        <sphereGeometry args={[size, 32, 32]} />
-        <meshBasicMaterial
-          color={glowColor}
-          transparent
-          opacity={0.05}
-          wireframe={true}
-        />
-      </mesh>
+    <group>
+      <mesh 
+        ref={meshRef} 
+        position={position}
+        onClick={onClick}
+        onPointerOver={(e) => {
+          e.stopPropagation();
+          document.body.style.cursor = 'pointer';
+          setHovered(true);
+        }}
+        onPointerOut={() => {
+          document.body.style.cursor = 'auto';
+          setHovered(false);
+        }}
+      >
+        {/* Glow effect */}
+        <mesh ref={glowRef} position={[0, 0, 0]}>
+          <sphereGeometry args={[size * 1.2, 16, 16]} />
+          <meshBasicMaterial 
+            color={glowColor} 
+            transparent 
+            opacity={0.3}
+            blending={THREE.AdditiveBlending}
+          />
+        </mesh>
 
-      {/* Inner glow sphere */}
-      <mesh scale={[1.2, 1.2, 1.2]}>
+        {/* Main planet sphere */}
         <sphereGeometry args={[size, 32, 32]} />
-        <meshBasicMaterial
+        <meshStandardMaterial 
           color={color}
-          transparent
-          opacity={0.1}
+          roughness={0.3}
+          metalness={0.8}
+          emissive={color}
+          emissiveIntensity={glowIntensity}
+        />
+        <pointLight 
+          intensity={1} 
+          distance={15} 
+          color={color}
+          decay={2}
         />
       </mesh>
-
-      {/* Main planet sphere */}
-      <sphereGeometry args={[size, 32, 32]} />
-      <meshStandardMaterial 
-        color={color}
-        roughness={0.3}
-        metalness={0.8}
-        emissive={color}
-        emissiveIntensity={glowIntensity}
-      />
-      <pointLight 
-        intensity={1} 
-        distance={15} 
-        color={color}
-        decay={2}
-      />
-      <Html center distanceFactor={15}>
-        <PlanetLabel isActive={isActive}>
+      
+      {/* Hover title */}
+      {hovered && (
+        <Html
+          position={[position[0], position[1] + size + 0.5, position[2]]}
+          center
+          style={{
+            pointerEvents: 'none',
+            color: 'white',
+            backgroundColor: 'rgba(0, 0, 0, 0.7)',
+            padding: '4px 8px',
+            borderRadius: '4px',
+            fontSize: '12px',
+            whiteSpace: 'nowrap',
+            fontFamily: 'sans-serif',
+          }}
+        >
           {name}
-          <br />
-          <small style={{ opacity: 0.7 }}>{section}</small>
-        </PlanetLabel>
-      </Html>
-    </mesh>
+        </Html>
+      )}
+    </group>
   );
 }
 
@@ -289,121 +302,148 @@ function SpaceDebris({ count = 100 }) {
   );
 }
 
-function Nebula({ position, color, scale = 1 }) {
-  const meshRef = useRef();
+function AsteroidBelt({ innerRadius, outerRadius, count = 500 }) {
+  const beltRef = useRef();
   
+  // Asteroid belt facts
+  const asteroidFacts = {
+    name: 'Asteroid Belt',
+    section: 'Between Mars & Jupiter',
+    details: 'The asteroid belt contains millions of rocky bodies, ranging in size from tiny dust particles to the dwarf planet Ceres. Despite popular belief, the asteroids are spread over such a large area that a spacecraft can pass through the belt without any risk of collision.',
+    tech: [
+      '4.6 Billion Years Old',
+      'Millions of Asteroids',
+      'Mostly Empty Space',
+      'Ceres: 950km Diameter'
+    ]
+  };
+  
+  // Rotate the entire belt in the opposite direction of the planets
   useFrame((state) => {
-    if (meshRef.current) {
-      meshRef.current.rotation.z += 0.0003;
-      meshRef.current.rotation.y += 0.0001;
+    if (beltRef.current) {
+      beltRef.current.rotation.y = state.clock.getElapsedTime() * -0.02; // Slow rotation
     }
   });
 
-  return (
-    <mesh ref={meshRef} position={position} scale={[scale, scale, scale]}>
-      <sphereGeometry args={[1, 32, 32]} />
-      <meshBasicMaterial
-        color={color}
-        transparent
-        opacity={0.15}
-        side={THREE.DoubleSide}
-        blending={THREE.AdditiveBlending}
-      />
-    </mesh>
-  );
-}
-
-function AsteroidBelt({ radius, count = 100 }) {
-  const points = useMemo(() => {
+  // Create a more realistic asteroid distribution with varying sizes and rotations
+  const asteroids = useMemo(() => {
     const temp = [];
+    const thickness = 2; // Thickness of the asteroid belt
+    
     for (let i = 0; i < count; i++) {
-      const angle = (i / count) * Math.PI * 2;
-      const spread = 2;
-      const r = radius + (Math.random() - 0.5) * spread;
-      temp.push(
-        Math.cos(angle) * r,
-        (Math.random() - 0.5) * 0.5,
-        Math.sin(angle) * r
-      );
-    }
-    return new Float32Array(temp);
-  }, [count, radius]);
-
-  useFrame((state) => {
-    state.camera.updateProjectionMatrix();
-  });
-
-  return (
-    <points>
-      <bufferGeometry>
-        <bufferAttribute
-          attachObject={['attributes', 'position']}
-          count={points.length / 3}
-          array={points}
-          itemSize={3}
-        />
-      </bufferGeometry>
-      <pointsMaterial
-        size={0.2}
-        color="#808080"
-        transparent
-        opacity={0.6}
-        sizeAttenuation
-      />
-    </points>
-  );
-}
-
-function DataStream({ count = 50 }) {
-  const points = useMemo(() => {
-    const temp = [];
-    for (let i = 0; i < count; i++) {
+      // Position in polar coordinates
       const angle = Math.random() * Math.PI * 2;
-      const radius = 40 + Math.random() * 100;
-      const height = (Math.random() - 0.5) * 60;
-      temp.push(
-        Math.cos(angle) * radius,
-        height,
-        Math.sin(angle) * radius
-      );
-    }
-    return new Float32Array(temp);
-  }, [count]);
-
-  const positions = useRef(points);
-  const velocities = useRef(new Float32Array(points.length).fill(0));
-
-  useFrame(() => {
-    for (let i = 0; i < points.length; i += 3) {
-      velocities.current[i + 1] -= 0.01;
-      positions.current[i + 1] += velocities.current[i + 1];
+      const distance = innerRadius + Math.random() * (outerRadius - innerRadius);
+      const spread = (outerRadius - innerRadius) * 0.5; // How much spread from the main orbit
+      const r = distance + (Math.random() - 0.5) * spread;
       
-      if (positions.current[i + 1] < -30) {
-        positions.current[i + 1] = 30;
-        velocities.current[i + 1] = 0;
-      }
+      // Random position within the belt
+      const x = Math.cos(angle) * r;
+      const z = Math.sin(angle) * r;
+      const y = (Math.random() - 0.5) * thickness;
+      
+      // Random size and rotation
+      const size = 0.1 + Math.random() * 0.4; // Vary the size
+      const rotation = {
+        x: Math.random() * Math.PI * 2,
+        y: Math.random() * Math.PI * 2,
+        z: Math.random() * Math.PI * 2
+      };
+      
+      // Slightly vary the color
+      const grayValue = 0.4 + Math.random() * 0.4;
+      const color = new THREE.Color(grayValue, grayValue, grayValue);
+      
+      temp.push({ position: [x, y, z], size, rotation, color });
     }
-  });
+    return temp;
+  }, [count, innerRadius, outerRadius]);
 
   return (
-    <points>
-      <bufferGeometry>
-        <bufferAttribute
-          attachObject={['attributes', 'position']}
-          count={points.length / 3}
-          array={positions.current}
-          itemSize={3}
-          usage={THREE.DynamicDrawUsage}
-        />
-      </bufferGeometry>
-      <pointsMaterial
-        size={0.5}
-        color="#00ff00"
-        transparent
-        opacity={0.4}
-        sizeAttenuation
-      />
-    </points>
+    <group ref={beltRef}>
+      {/* Small asteroids */}
+      {Array.from({ length: count }).map((_, i) => {
+        const angle = Math.random() * Math.PI * 2;
+        const distance = innerRadius + Math.random() * (outerRadius - innerRadius);
+        const x = Math.cos(angle) * distance;
+        const z = Math.sin(angle) * distance;
+        const y = (Math.random() - 0.5) * 1.5;
+        const size = 0.1 + Math.random() * 0.3;
+        const isBox = Math.random() > 0.7;
+        
+        return (
+          <mesh
+            key={`small-${i}`}
+            position={[x, y, z]}
+            rotation={[Math.random() * Math.PI, Math.random() * Math.PI, Math.random() * Math.PI]}
+          >
+            {isBox ? (
+              <boxGeometry args={[size, size, size]} />
+            ) : (
+              <dodecahedronGeometry args={[size, 0]} />
+            )}
+            <meshStandardMaterial 
+              color={`hsl(${Math.random() * 60 + 20}, 10%, ${Math.random() * 20 + 40}%)`}
+              roughness={0.8}
+              metalness={0.1}
+            />
+          </mesh>
+        );
+      })}
+      
+      {/* Add some larger, more detailed asteroids */}
+      {Array.from({ length: Math.floor(count / 20) }).map((_, i) => {
+        const angle = (i / (count / 20)) * Math.PI * 2;
+        const distance = innerRadius + (outerRadius - innerRadius) * 0.5;
+        const x = Math.cos(angle) * distance;
+        const z = Math.sin(angle) * distance;
+        const y = (Math.random() - 0.5) * 1.5;
+        const size = 0.5 + Math.random() * 0.8;
+        
+        return (
+          <mesh
+            key={`large-${i}`}
+            position={[x, y, z]}
+            rotation={[Math.random() * Math.PI, Math.random() * Math.PI, Math.random() * Math.PI]}
+          >
+            <dodecahedronGeometry args={[size, 1]} />
+            <meshStandardMaterial 
+              color={`hsl(${Math.random() * 60 + 20}, 15%, ${Math.random() * 15 + 30}%)`}
+              roughness={0.9}
+              metalness={0.1}
+            />
+          </mesh>
+        );
+      })}
+      
+
+      
+      {/* Dust particles for visual effect */}
+      <group ref={beltRef}>
+        {Array.from({ length: count * 1.5 }).map((_, i) => {
+          const angle = (i / (count * 1.5)) * Math.PI * 2;
+          const distance = innerRadius + Math.random() * (outerRadius - innerRadius);
+          const x = Math.cos(angle) * distance;
+          const z = Math.sin(angle) * distance;
+          const y = (Math.random() - 0.5) * 2;
+          const size = 0.05 + Math.random() * 0.1;
+          
+          return (
+            <mesh
+              key={`dust-${i}`}
+              position={[x, y, z]}
+            >
+              <sphereGeometry args={[size, 4, 4]} />
+              <meshBasicMaterial 
+                color={`hsl(0, 0%, ${Math.random() * 30 + 30}%)`}
+                transparent
+                opacity={0.5}
+              />
+            </mesh>
+          );
+        })}
+      </group>
+    </group>
   );
 }
 
@@ -450,14 +490,97 @@ function SecurityGrid({ size = 100, divisions = 10 }) {
   );
 }
 
-function RotatingSystem({ planets, activePlanet, handlePlanetClick }) {
-  const systemRef = useRef();
+function Moon({ earthPosition }) {
+  const moonRef = useRef();
+  const [hovered, setHovered] = useState(false);
+  const orbitRadius = 3; // Distance from Earth
+  const orbitSpeed = 1.5; // Speed of orbit
+  const moonSize = 0.4; // Size of the Moon
   
-  useFrame((state, delta) => {
-    if (systemRef.current && !activePlanet) {
-      systemRef.current.rotation.y += delta * 0.05; // Slow rotation
+  useFrame((state) => {
+    if (moonRef.current) {
+      const time = state.clock.getElapsedTime() * orbitSpeed;
+      // Orbit around Earth
+      moonRef.current.position.x = earthPosition[0] + Math.cos(time) * orbitRadius;
+      moonRef.current.position.z = earthPosition[2] + Math.sin(time) * orbitRadius;
+      // Slight vertical offset for more natural look
+      moonRef.current.position.y = earthPosition[1] + Math.sin(time * 1.5) * 0.5;
+      
+      // Rotate the Moon
+      moonRef.current.rotation.y += 0.01;
     }
   });
+
+  return (
+    <group>
+      <mesh 
+        ref={moonRef}
+        onPointerOver={() => setHovered(true)}
+        onPointerOut={() => setHovered(false)}
+      >
+        <sphereGeometry args={[moonSize, 16, 16]} />
+        <meshStandardMaterial 
+          color="#cccccc"
+          roughness={0.8}
+          metalness={0.1}
+        />
+      </mesh>
+      
+      {/* Hover title for Moon */}
+      {hovered && (
+        <Html
+          position={[
+            moonRef.current?.position.x || 0,
+            (moonRef.current?.position.y || 0) + moonSize + 0.3,
+            moonRef.current?.position.z || 0
+          ]}
+          center
+          style={{
+            pointerEvents: 'none',
+            color: 'white',
+            backgroundColor: 'rgba(0, 0, 0, 0.7)',
+            padding: '4px 8px',
+            borderRadius: '4px',
+            fontSize: '12px',
+            whiteSpace: 'nowrap',
+            fontFamily: 'sans-serif',
+          }}
+        >
+          The Moon
+        </Html>
+      )}
+    </group>
+  );
+}
+
+function RotatingSystem({ planets, activePlanet, handlePlanetClick }) {
+  const systemRef = useRef();
+  const [earthPosition, setEarthPosition] = useState([0, 0, 0]);
+  const rotationSpeed = useRef(0.002); // Slower, more controlled rotation speed
+  const lastTime = useRef(0);
+  
+  useFrame((state) => {
+    if (systemRef.current && !activePlanet) {
+      // Use requestAnimationFrame's timestamp for smoother animation
+      const time = state.clock.getElapsedTime();
+      if (lastTime.current === 0) {
+        lastTime.current = time;
+      }
+      const delta = time - lastTime.current;
+      lastTime.current = time;
+      
+      // Apply smooth rotation
+      systemRef.current.rotation.y += rotationSpeed.current * Math.min(delta * 60, 2);
+    }
+  });
+
+  // Find Earth's position
+  useEffect(() => {
+    const earth = planets.find(p => p.name === 'Earth');
+    if (earth) {
+      setEarthPosition(earth.position);
+    }
+  }, [planets]);
 
   return (
     <group ref={systemRef}>
@@ -483,117 +606,209 @@ function RotatingSystem({ planets, activePlanet, handlePlanetClick }) {
 
       {/* Section planets */}
       {planets.map((planet, index) => (
-        <RotatingPlanet
-          key={`planet-${index}`}
-          {...planet}
-          onClick={(e) => {
-            e.stopPropagation();
-            handlePlanetClick(planet);
-          }}
-          isActive={activePlanet?.id === planet.id}
-        />
+        <group key={`planet-${index}`}>
+          <RotatingPlanet
+            {...planet}
+            onClick={(e) => {
+              e.stopPropagation();
+              handlePlanetClick(planet);
+            }}
+            isActive={activePlanet?.id === planet.id}
+            hasRings={planet.name === 'Saturn'}
+          />
+          {/* Add Moon if this is Earth */}
+          {planet.name === 'Earth' && <Moon earthPosition={earthPosition} />}
+          {/* Add rings if this is Saturn */}
+          {planet.name === 'Saturn' && (
+            <SaturnRings position={planet.position} planetSize={planet.size} />
+          )}
+        </group>
       ))}
     </group>
   );
 }
 
-// Add new space environment components
-function DistantGalaxy({ position, scale = 1, color }) {
-  const galaxyRef = useRef();
+function CometManager() {
+  const [showComet, setShowComet] = useState(false);
+  const [cometKey, setCometKey] = useState(0);
   
-  useFrame((state) => {
-    if (galaxyRef.current) {
-      galaxyRef.current.rotation.z += 0.0002;
-      galaxyRef.current.rotation.y += 0.0001;
+  // Show a new comet at random intervals
+  useEffect(() => {
+    const showCometTimer = () => {
+      // Random delay between 5 and 15 seconds
+      const delay = 5000 + Math.random() * 10000;
+      const timer = setTimeout(() => {
+        setShowComet(true);
+        setCometKey(prev => prev + 1);
+        
+        // Hide the comet after it crosses the screen
+        const hideTimer = setTimeout(() => {
+          setShowComet(false);
+          showCometTimer(); // Schedule next comet
+        }, 10000); // Comet takes about 10 seconds to cross
+        
+        return () => clearTimeout(hideTimer);
+      }, delay);
+      
+      return () => clearTimeout(timer);
+    };
+    
+    const timer = showCometTimer();
+    return () => clearTimeout(timer);
+  }, []);
+  
+  if (!showComet) return null;
+  
+  return <Comet key={cometKey} />;
+}
+
+function Comet() {
+  const ref = useRef();
+  const spread = 300;
+  const [hovered, setHovered] = useState(false);
+  const [position, setPosition] = useState(() => {
+    const side = Math.floor(Math.random() * 4);
+    const pos = new THREE.Vector3();
+    
+    switch(side) {
+      case 0: // Left
+        pos.set(-spread, Math.random() * spread - spread/2, Math.random() * 50 - 25);
+        break;
+      case 1: // Right
+        pos.set(spread, Math.random() * spread - spread/2, Math.random() * 50 - 25);
+        break;
+      case 2: // Top
+        pos.set(Math.random() * spread - spread/2, spread, Math.random() * 50 - 25);
+        break;
+      case 3: // Bottom
+        pos.set(Math.random() * spread - spread/2, -spread, Math.random() * 50 - 25);
+        break;
+    }
+    
+    return pos;
+  });
+  
+  // Direction towards center with some randomness
+  const [direction] = useState(() => {
+    const dir = new THREE.Vector3(-position.x, -position.y, (Math.random() - 0.5) * 0.5).normalize();
+    return dir;
+  });
+  
+  // Store tail positions
+  const [tail, setTail] = useState([]);
+  const tailLength = 10;
+  
+  useFrame((state, delta) => {
+    if (!ref.current) return;
+    
+    // Move the comet
+    const speed = 0.5 + Math.random() * 0.5;
+    const newPosition = position.clone().add(direction.clone().multiplyScalar(speed));
+    
+    // Update tail
+    setTail(prev => {
+      const newTail = [[newPosition.x, newPosition.y, newPosition.z], ...prev];
+      return newTail.slice(0, tailLength);
+    });
+    
+    // Reset if out of bounds
+    if (Math.abs(newPosition.x) > 500 || Math.abs(newPosition.y) > 500) {
+      const spread = 300;
+      const side = Math.floor(Math.random() * 4);
+      
+      let resetPos;
+      switch(side) {
+        case 0: resetPos = new THREE.Vector3(-spread, Math.random() * spread - spread/2, Math.random() * 100 - 50); break;
+        case 1: resetPos = new THREE.Vector3(spread, Math.random() * spread - spread/2, Math.random() * 100 - 50); break;
+        case 2: resetPos = new THREE.Vector3(Math.random() * spread - spread/2, -spread, Math.random() * 100 - 50); break;
+        case 3: resetPos = new THREE.Vector3(Math.random() * spread - spread/2, spread, Math.random() * 100 - 50); break;
+        default: resetPos = new THREE.Vector3(0, 0, 0);
+      }
+      
+      setPosition(resetPos);
+      setTail([]);
+    } else {
+      setPosition(newPosition);
     }
   });
 
   return (
-    <mesh ref={galaxyRef} position={position} scale={[scale, scale * 0.1, scale]}>
-      <planeGeometry args={[1, 1, 32, 32]} />
-      <meshBasicMaterial
-        color={color}
-        transparent
-        opacity={0.15}
-        side={THREE.DoubleSide}
-        blending={THREE.AdditiveBlending}
-      />
-    </mesh>
-  );
-}
-
-function SpaceDust({ count = 1000, radius = 300 }) {
-  const points = useMemo(() => {
-    const temp = [];
-    for (let i = 0; i < count; i++) {
-      const theta = Math.random() * Math.PI * 2;
-      const phi = Math.acos(2 * Math.random() - 1);
-      const r = radius * Math.cbrt(Math.random());
+    <group>
+      <group 
+        ref={ref} 
+        position={position}
+        onPointerOver={() => setHovered(true)}
+        onPointerOut={() => setHovered(false)}
+      >
+        {/* Comet head */}
+        <mesh>
+          <sphereGeometry args={[0.2, 8, 8]} />
+          <meshBasicMaterial 
+            color={`hsl(0.12, 30%, 80%)`} 
+            transparent 
+            opacity={1}
+            blending={THREE.AdditiveBlending}
+          />
+        </mesh>
+        
+        {/* Comet tail - line of fading dots */}
+        <group>
+          {tail.map((pos, i) => {
+            const opacity = 1 - (i / tailLength);
+            return (
+              <mesh key={i} position={new THREE.Vector3(pos[0], pos[1], pos[2]).sub(position)}>
+                <sphereGeometry args={[0.1, 4, 4]} />
+                <meshBasicMaterial 
+                  color={`hsl(0.12, 30%, 80%)`} 
+                  transparent 
+                  opacity={opacity * 0.4} 
+                  blending={THREE.AdditiveBlending}
+                />
+              </mesh>
+            );
+          })}
+        </group>
+      </group>
       
-      temp.push(
-        r * Math.sin(phi) * Math.cos(theta),
-        r * Math.sin(phi) * Math.sin(theta),
-        r * Math.cos(phi)
-      );
-    }
-    return new Float32Array(temp);
-  }, [count, radius]);
-
-  return (
-    <points>
-      <bufferGeometry>
-        <bufferAttribute
-          attachObject={['attributes', 'position']}
-          count={points.length / 3}
-          array={points}
-          itemSize={3}
-        />
-      </bufferGeometry>
-      <pointsMaterial
-        size={0.2}
-        color="#FFFFFF"
-        transparent
-        opacity={0.4}
-        sizeAttenuation
-      />
-    </points>
+      {/* Hover title */}
+      {hovered && ref.current && (
+        <Html
+          position={[position.x, position.y + 0.5, position.z]}
+          center
+          style={{
+            pointerEvents: 'none',
+            color: 'white',
+            backgroundColor: 'rgba(0, 0, 0, 0.7)',
+            padding: '4px 8px',
+            borderRadius: '4px',
+            fontSize: '12px',
+            whiteSpace: 'nowrap',
+            fontFamily: 'sans-serif',
+          }}
+        >
+          Comet
+        </Html>
+      )}
+    </group>
   );
 }
 
-function CosmicRays({ count = 50 }) {
-  const rays = useMemo(() => {
-    const temp = [];
-    for (let i = 0; i < count; i++) {
-      const angle = Math.random() * Math.PI * 2;
-      const radius = 200 + Math.random() * 100;
-      const height = (Math.random() - 0.5) * 200;
-      temp.push(
-        Math.cos(angle) * radius,
-        height,
-        Math.sin(angle) * radius
-      );
-    }
-    return new Float32Array(temp);
-  }, [count]);
-
+function SpaceEnvironment({ orbitBase, orbitSpacing }) {
   return (
-    <points>
-      <bufferGeometry>
-        <bufferAttribute
-          attachObject={['attributes', 'position']}
-          count={rays.length / 3}
-          array={rays}
-          itemSize={3}
-        />
-      </bufferGeometry>
-      <pointsMaterial
-        size={0.5}
-        color="#00FFFF"
-        transparent
-        opacity={0.3}
-        sizeAttenuation
+    <>
+      <Stars radius={100} depth={50} count={5000} factor={4} saturation={0} fade speed={1} />
+      <SpaceDebris count={200} />
+      
+      {/* Asteroid belt between Mars and Jupiter with clear separation */}
+      <AsteroidBelt 
+        innerRadius={orbitBase + (orbitSpacing * 3) + 2}  // Start after Mars' orbit with 2 units gap
+        outerRadius={orbitBase + (orbitSpacing * 4) - 2}  // End before Jupiter's orbit with 2 units gap
+        count={1000}  // Increased count for better density
       />
-    </points>
+      
+      {/* Security grid for high-tech feel */}
+      <SecurityGrid size={200} divisions={20} />
+    </>
   );
 }
 
@@ -604,19 +819,23 @@ function SolarSystem() {
     setActivePlanet(activePlanet?.id === planet?.id ? null : planet);
   };
 
+  // Orbit configuration with proper spacing for asteroid belt
+  const orbitBase = 12;
+  const orbitSpacing = 10;  // Increased to ensure clear separation for asteroid belt
+
   const planets = [
     { 
       id: 1,
       name: 'Mercury',
       section: 'First Planet',
       position: [
-        8 * Math.cos(Math.PI * 0.5), 
+        (orbitBase) * Math.cos(Math.PI * 0.5), 
         0,
-        8 * Math.sin(Math.PI * 0.5)
+        (orbitBase) * Math.sin(Math.PI * 0.5)
       ],
-      orbitRadius: 8,
-      size: 1.3,
-      color: '#9C27B0',
+      orbitRadius: orbitBase,
+      size: 0.7,  // Scaled down from 0.38 for better visibility
+      color: '#A9A9A9',  // Dark gray, rocky surface
       details: 'Mercury is the smallest and innermost planet in our solar system. It has no atmosphere and experiences extreme temperature variations, from -180°C to 430°C. A year on Mercury is just 88 Earth days!',
       tech: ['Smallest Planet', 'No Atmosphere', 'Fastest Orbit']
     },
@@ -625,13 +844,13 @@ function SolarSystem() {
       name: 'Venus',
       section: 'Second Planet',
       position: [
-        12 * Math.cos(Math.PI * 1.7), 
+        (orbitBase + orbitSpacing) * Math.cos(Math.PI * 1.7), 
         0,
-        12 * Math.sin(Math.PI * 1.7)
+        (orbitBase + orbitSpacing) * Math.sin(Math.PI * 1.7)
       ],
-      orbitRadius: 12,
-      size: 1.2,
-      color: '#F44336',
+      orbitRadius: orbitBase + orbitSpacing,
+      size: 0.9,  // Slightly smaller than Earth
+      color: '#E6E6FA',  // Pale yellow with white clouds
       details: 'Venus is often called Earth\'s "sister planet" due to similar size. It has a thick atmosphere of carbon dioxide and sulfuric acid clouds. Surface temperatures reach 462°C, making it the hottest planet in our solar system!',
       tech: ['Earth\'s Twin', 'Hottest Planet', 'Acid Rain']
     },
@@ -640,13 +859,13 @@ function SolarSystem() {
       name: 'Earth',
       section: 'Third Planet',
       position: [
-        16 * Math.cos(Math.PI * 0.3), 
+        (orbitBase + orbitSpacing * 2) * Math.cos(Math.PI * 0.3), 
         0,
-        16 * Math.sin(Math.PI * 0.3)
+        (orbitBase + orbitSpacing * 2) * Math.sin(Math.PI * 0.3)
       ],
-      orbitRadius: 16,
-      size: 1.1,
-      color: '#4CAF50',
+      orbitRadius: orbitBase + (orbitSpacing * 2),
+      size: 1.0,  // Reference size
+      color: '#1E88E5',  // Blue with white clouds
       details: 'Earth is the only known planet to harbor life. It\'s covered 71% by water and has a protective atmosphere. The Earth\'s rotation is gradually slowing down, making days slightly longer each year.',
       tech: ['Blue Planet', 'Only Life', 'Water World']
     },
@@ -655,13 +874,13 @@ function SolarSystem() {
       name: 'Mars',
       section: 'Fourth Planet',
       position: [
-        20 * Math.cos(Math.PI * 1.2), 
+        (orbitBase + orbitSpacing * 3) * Math.cos(Math.PI * 1.2), 
         0,
-        20 * Math.sin(Math.PI * 1.2)
+        (orbitBase + orbitSpacing * 3) * Math.sin(Math.PI * 1.2)
       ],
-      orbitRadius: 20,
-      size: 1.0,
-      color: '#2196F3',
+      orbitRadius: orbitBase + (orbitSpacing * 3),
+      size: 0.6,  // Scaled up from 0.53 for better visibility
+      color: '#C1440E',  // Reddish-brown
       details: 'Mars is known as the "Red Planet" due to iron oxide on its surface. It has the largest volcano in the solar system, Olympus Mons, and the deepest canyon, Valles Marineris. Mars has two small moons, Phobos and Deimos.',
       tech: ['Red Planet', 'Olympus Mons', 'Two Moons']
     },
@@ -670,13 +889,13 @@ function SolarSystem() {
       name: 'Jupiter',
       section: 'Fifth Planet',
       position: [
-        24 * Math.cos(Math.PI * 2.2), 
+        (orbitBase + orbitSpacing * 4) * Math.cos(Math.PI * 2.2), 
         0,
-        24 * Math.sin(Math.PI * 2.2)
+        (orbitBase + orbitSpacing * 4) * Math.sin(Math.PI * 2.2)
       ],
-      orbitRadius: 24,
-      size: 1.1,
-      color: '#673AB7',
+      orbitRadius: orbitBase + (orbitSpacing * 4),
+      size: 2.5,  // Scaled down from 11.2 to fit better
+      color: '#E1AA74',  // Beige with red/brown bands
       details: 'Jupiter is the largest planet in our solar system. Its Great Red Spot is a storm that has been raging for over 400 years. Jupiter has 79 known moons, including the four large Galilean moons: Io, Europa, Ganymede, and Callisto.',
       tech: ['Largest Planet', 'Great Red Spot', '79 Moons']
     },
@@ -685,13 +904,13 @@ function SolarSystem() {
       name: 'Saturn',
       section: 'Sixth Planet',
       position: [
-        28 * Math.cos(Math.PI * 0.8), 
+        (orbitBase + orbitSpacing * 5) * Math.cos(Math.PI * 0.8), 
         0,
-        28 * Math.sin(Math.PI * 0.8)
+        (orbitBase + orbitSpacing * 5) * Math.sin(Math.PI * 0.8)
       ],
-      orbitRadius: 28,
-      size: 0.9,
-      color: '#FFC107',
+      orbitRadius: orbitBase + (orbitSpacing * 5),
+      size: 2.1,  // Scaled down from 9.45 to fit better
+      color: '#F4E5C2',  // Pale gold
       details: 'Saturn is famous for its spectacular ring system made of ice particles and rocky debris. It\'s the least dense planet in our solar system - it would float in water! Saturn\'s rings are only about 10 meters thick but span 282,000 kilometers.',
       tech: ['Ringed Planet', 'Ice Rings', 'Low Density']
     },
@@ -700,13 +919,13 @@ function SolarSystem() {
       name: 'Uranus',
       section: 'Seventh Planet',
       position: [
-        32 * Math.cos(Math.PI * 1.5), 
+        (orbitBase + orbitSpacing * 6) * Math.cos(Math.PI * 1.5), 
         0,
-        32 * Math.sin(Math.PI * 1.5)
+        (orbitBase + orbitSpacing * 6) * Math.sin(Math.PI * 1.5)
       ],
-      orbitRadius: 32,
-      size: 0.8,
-      color: '#00BCD4',
+      orbitRadius: orbitBase + (orbitSpacing * 6),
+      size: 1.5,  // Scaled down from 4.01 to fit better
+      color: '#C1E3E3',  // Pale cyan
       details: 'Uranus is unique as it rotates on its side, with an axial tilt of 98 degrees. It has a pale blue color due to methane in its atmosphere. Uranus has 27 known moons and a system of 13 rings.',
       tech: ['Sideways Planet', 'Ice Giant', '13 Rings']
     },
@@ -715,13 +934,13 @@ function SolarSystem() {
       name: 'Neptune',
       section: 'Eighth Planet',
       position: [
-        36 * Math.cos(Math.PI * 2.5), 
+        (orbitBase + orbitSpacing * 7) * Math.cos(Math.PI * 2.5), 
         0,
-        36 * Math.sin(Math.PI * 2.5)
+        (orbitBase + orbitSpacing * 7) * Math.sin(Math.PI * 2.5)
       ],
-      orbitRadius: 36,
-      size: 0.8,
-      color: '#3F51B5',
+      orbitRadius: orbitBase + (orbitSpacing * 7),
+      size: 1.4,  // Scaled down from 3.88 to fit better
+      color: '#5B5DDF',  // Deep blue
       details: 'Neptune is the windiest planet in our solar system, with winds reaching up to 2,100 km/h. It has 14 known moons and a system of six rings. Neptune\'s Great Dark Spot is a storm system similar to Jupiter\'s Great Red Spot.',
       tech: ['Windiest Planet', 'Ice Giant', '14 Moons']
     },
@@ -730,13 +949,13 @@ function SolarSystem() {
       name: 'Pluto',
       section: 'Dwarf Planet',
       position: [
-        40 * Math.cos(Math.PI * 0.9), 
+        (orbitBase + orbitSpacing * 8) * Math.cos(Math.PI * 0.9), 
         0,
-        40 * Math.sin(Math.PI * 0.9)
+        (orbitBase + orbitSpacing * 8) * Math.sin(Math.PI * 0.9)
       ],
-      orbitRadius: 40,
-      size: 0.6,
-      color: '#795548',
+      orbitRadius: orbitBase + (orbitSpacing * 8),
+      size: 0.35,  // Scaled up from 0.19 for better visibility
+      color: '#C1A779',  // Light brown
       details: 'Pluto is a dwarf planet in the Kuiper Belt. It has a heart-shaped glacier called Tombaugh Regio and five known moons. Pluto\'s orbit is highly elliptical and tilted compared to the other planets.',
       tech: ['Dwarf Planet', 'Kuiper Belt', 'Heart Glacier']
     }
@@ -797,64 +1016,31 @@ function SolarSystem() {
 
       <CanvasWrapper>
         <Canvas 
-          camera={{ position: [0, 45, 100], fov: 45 }}
+          camera={{ position: [0, 60, 150], fov: 45 }}
           gl={{ antialias: true }}
           onWheel={(e) => e.stopPropagation()}
         >
           <ambientLight intensity={0.3} />
-          <pointLight position={[0, 0, 0]} intensity={4} color="#FFD700" />
+          <pointLight position={[0, 0, 0]} intensity={2} color="#ffffff" />
           <hemisphereLight intensity={0.3} groundColor="#000066" />
           <fog attach="fog" args={['#000033', 120, 220]} />
           
-          {/* Enhanced space background */}
+          {/* Comets */}
+          <CometManager />
+          
+          {/* Simple stars background */}
           <Stars 
-            radius={100} 
-            depth={50} 
-            count={8000}
+            radius={200}
+            depth={100}
+            count={2000}
             factor={6}
-            saturation={1}
-            fade={true}
-            speed={0.5}
-          />
-          <Stars 
-            radius={120} 
-            depth={70} 
-            count={4000} 
-            factor={4} 
-            saturation={0.8}
-            fade={true}
-            speed={0.2}
+            saturation={0}
+            fade
+            speed={2}
           />
           
-          {/* New space environment elements */}
-          <SpaceDust count={2000} radius={400} />
-          <CosmicRays count={100} />
-          
-          {/* Distant galaxies */}
-          <DistantGalaxy position={[300, 100, -400]} scale={100} color="#FF69B4" />
-          <DistantGalaxy position={[-350, -80, -450]} scale={120} color="#9370DB" />
-          <DistantGalaxy position={[400, -120, -380]} scale={90} color="#20B2AA" />
-          <DistantGalaxy position={[-380, 150, -420]} scale={110} color="#FF7F50" />
-          
-          {/* Enhanced nebula clouds */}
-          <Nebula position={[120, 40, -150]} color="#4169E1" scale={45} />
-          <Nebula position={[-180, -30, -200]} color="#9C27B0" scale={55} />
-          <Nebula position={[0, -80, -120]} color="#2196F3" scale={40} />
-          <Nebula position={[200, 20, -180]} color="#673AB7" scale={50} />
-          <Nebula position={[-140, 60, -140]} color="#00BCD4" scale={35} />
-          <Nebula position={[160, -40, -220]} color="#3F51B5" scale={45} />
-          <Nebula position={[-220, 10, -160]} color="#E91E63" scale={40} />
-          <Nebula position={[80, -100, -180]} color="#FF9800" scale={30} />
-          <Nebula position={[-100, 80, -240]} color="#4CAF50" scale={50} />
-          <Nebula position={[240, -60, -140]} color="#9C27B0" scale={35} />
-          <Nebula position={[-160, -80, -200]} color="#2196F3" scale={45} />
-          <Nebula position={[180, 100, -160]} color="#FFC107" scale={40} />
-
-          {/* Multiple asteroid belts */}
-          <AsteroidBelt radius={28} count={200} />
-          <AsteroidBelt radius={32} count={180} />
-          <AsteroidBelt radius={36} count={150} />
-          <AsteroidBelt radius={40} count={120} />
+          {/* Space environment */}
+          <SpaceEnvironment orbitBase={orbitBase} orbitSpacing={orbitSpacing} />
           
           {/* Rotating system with all planets */}
           <RotatingSystem 
