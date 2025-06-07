@@ -1,7 +1,6 @@
-import React, { useEffect, useState, useMemo, Suspense } from 'react';
+import React from 'react';
 import styled, { keyframes } from 'styled-components';
-import { Canvas } from '@react-three/fiber';
-import { useGLTF, OrbitControls } from '@react-three/drei';
+import { useNavigate } from 'react-router-dom';
 
 const float = keyframes`
   0% {
@@ -15,17 +14,6 @@ const float = keyframes`
   }
 `;
 
-const typewriter = keyframes`
-  from { width: 0 }
-  to { width: 100% }
-`;
-
-const blink = keyframes`
-  from, to { border-color: transparent }
-  50% { border-color: #4169E1 }
-`;
-
-
 const HeaderContainer = styled.div`
   position: relative;
   width: 100%;
@@ -36,7 +24,7 @@ const HeaderContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: center;
   padding-top: 5vh;
 
   &::before {
@@ -51,60 +39,6 @@ const HeaderContainer = styled.div`
   }
 `;
 
-const SpaceshipModel = () => {
-  const { scene } = useGLTF('project_images/cute_astronaut1.glb');
-  const isMobile = window.innerWidth <= 768;
-  
-  useEffect(() => {
-    scene.traverse((node) => {
-      if (node.isMesh) {
-        node.castShadow = true;
-        node.receiveShadow = true;
-        if (node.material) {
-          node.material.emissiveIntensity = 1;
-          node.material.toneMapped = false;
-        }
-      }
-    });
-  }, [scene]);
-
-  const position = isMobile ? [0, -6, 2] : [0, -7, 0];
-  const scale = isMobile ? 75 : 90;
-
-  return <primitive object={scene} scale={scale} position={position} rotation={[0, Math.PI / 20, 0]} />;
-};
-
-const ResumeButtonContainer = styled.a`
-  position: relative;
-  width: 400px;
-  height: 800px;
-  margin-bottom: 10vh;
-  cursor: pointer;
-  animation: ${float} 4s ease-in-out infinite;
-  display: block;
-`;
-
-const ModelCanvas = styled(Canvas)`
-  width: 100% !important;
-  max-width: 400px !important;
-  height: auto !important;
-  position: relative;
-  z-index: 2;
-  touch-action: none;
-  
-  canvas {
-    touch-action: none;
-    width: 100% !important;
-    height: auto !important;
-  }
-
-  @media (max-width: 768px) {
-    width: 100% !important;
-    max-width: 300px !important;
-    height: auto !important;
-  }
-`;
-
 const WelcomeMessage = styled.h1`
   font-size: 8rem;
   font-weight: 900;
@@ -114,14 +48,10 @@ const WelcomeMessage = styled.h1`
   margin-top: 2vh;
   animation: ${float} 6s ease-in-out infinite;
   font-family: 'Orbitron', sans-serif;
-  position: fixed;
-  top: 25vh;
-  left: 0;
-  width: 100%;
-  z-index: -9999;
+  position: relative;
+  z-index: 1;
   padding: 1rem 0;
   transition: all 0.3s ease;
-  pointer-events: none;
   
   &::before, &::after {
     content: '';
@@ -138,7 +68,7 @@ const WelcomeMessage = styled.h1`
     );
     animation: shimmer 3s linear infinite;
     transform: skewX(-20deg);
-    z-index: -999;
+    z-index: -1;
   }
   
   &::after {
@@ -159,121 +89,70 @@ const WelcomeMessage = styled.h1`
   }
 `;
 
-const TypewriterContainer = styled.div`
-  text-align: center;
+const ExploreButton = styled.button`
+  margin-top: 2rem;
+  padding: 1rem 2rem;
+  font-size: 1.5rem;
   font-family: 'Orbitron', sans-serif;
   color: #fff;
-  margin-top: 1vh;
-  max-width: 600px;
-`;
-
-const TypewriterText = styled.div`
-  font-size: 2rem;
-  font-weight: 700;
-  color: #fff;
-  text-shadow: 0 0 5px #4169E1, 0 0 10px #4169E1;
-  overflow: hidden;
-  white-space: nowrap;
-  display: inline-block;
+  background: transparent;
+  border: 2px solid #4169E1;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
   position: relative;
-  animation: 
-    ${typewriter} 2s steps(50, end) forwards,
-    ${props => props.isWaiting ? 'none' : 'none'} 0.5s ease forwards,
-    ${blink} 0.75s step-end infinite;
-  border-right: 3px solid #4169E1;
+  z-index: 1;
+  overflow: hidden;
+  
+  &:hover {
+    background: rgba(65, 105, 225, 0.2);
+    transform: translateY(-3px);
+    box-shadow: 0 0 20px rgba(65, 105, 225, 0.4);
+  }
+  
+  &:active {
+    transform: translateY(1px);
+  }
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(65, 105, 225, 0.2),
+      transparent
+    );
+    transition: 0.5s;
+  }
+  
+  &:hover::before {
+    left: 100%;
+  }
   
   @media (max-width: 768px) {
-    font-size: 1.5rem;
+    font-size: 1.2rem;
+    padding: 0.8rem 1.6rem;
   }
 `;
 
-const ContentContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: 2rem;
-  height: 100%;
-  width: 100%;
-  position: relative;
-  z-index: 1;
-  padding-top: calc(25vh + 8rem); /* Add space for the fixed welcome message */
-`;
-
 const Header = () => {
-  const [typewriterIndex, setTypewriterIndex] = useState(0);
-  const [isWaiting, setIsWaiting] = useState(false);
+  const navigate = useNavigate();
 
-  const typewriterTexts = useMemo(() => [
-    "Full Stack Development 💻",
-    "Cybersecurity🔒",
-    "Software Engineering 🧩",
-    "Cloud Security 🌐"
-  ], []);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsWaiting(true);
-      setTimeout(() => {
-        setTypewriterIndex((prev) => (prev + 1) % typewriterTexts.length);
-        setIsWaiting(false);
-      }, 3000); // Wait 3 seconds before showing next text
-    }, 3000); // Wait 3 seconds after typing is complete
-
-    return () => clearTimeout(timer);
-  }, [typewriterIndex, typewriterTexts]);
+  const handleExplore = () => {
+    navigate('/solar-system');
+  };
 
   return (
     <HeaderContainer>
-      <ContentContainer>
-        <ResumeButtonContainer target="_blank" rel="noopener noreferrer">
-          <ModelCanvas
-            camera={{ position: [0, 0, 10], fov: 45 }}
-            shadows
-          >
-            <ambientLight intensity={1.5} />
-            <directionalLight
-              position={[0, 5, 5]}
-              intensity={2.5}
-              castShadow
-              color="#ffffff"
-            />
-            <pointLight position={[-3, 0, 3]} intensity={1.5} color="#4169E1" />
-            <pointLight position={[3, 0, 3]} intensity={1.5} color="#ff69b4" />
-            <spotLight
-              position={[0, 10, 0]}
-              angle={0.5}
-              penumbra={1}
-              intensity={2}
-              castShadow
-            />
-            <Suspense fallback={null}>
-              <SpaceshipModel />
-              <OrbitControls
-                enableZoom={false}
-                enablePan={false}
-                autoRotate
-                autoRotateSpeed={3}
-                minPolarAngle={Math.PI / 3}
-                maxPolarAngle={Math.PI / 1.5}
-                rotateSpeed={5}
-                dampingFactor={0.05}
-                enableDamping
-                onPointerDown={(e) => e.stopPropagation()}
-                onPointerMove={(e) => e.stopPropagation()}
-                onPointerUp={(e) => e.stopPropagation()}
-              />
-            </Suspense>
-          </ModelCanvas>
-        </ResumeButtonContainer>
-        <WelcomeMessage>Dive Into & Explore My Universe</WelcomeMessage>
-        <TypewriterContainer>
-          <TypewriterText key={typewriterIndex} isWaiting={isWaiting}>
-            {typewriterTexts[typewriterIndex]}
-          </TypewriterText>
-        </TypewriterContainer>
-      </ContentContainer>
+      <WelcomeMessage>Welcome</WelcomeMessage>
+      <ExploreButton onClick={handleExplore}>
+        Explore Solar System
+      </ExploreButton>
     </HeaderContainer>
   );
 };

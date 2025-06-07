@@ -3,7 +3,6 @@ import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, Stars, Html } from '@react-three/drei';
 import * as THREE from 'three';
 import styled, { keyframes } from 'styled-components';
-import { Link } from 'react-scroll';
 
 const bounce = keyframes`
   0%, 20%, 50%, 80%, 100% {
@@ -19,7 +18,7 @@ const bounce = keyframes`
 
 const SolarSystemContainer = styled.div`
   width: 100%;
-  height: 85vh;
+  height: 100vh;
   background: linear-gradient(to bottom, #000000, #000033);
   position: relative;
   z-index: 1;
@@ -149,26 +148,6 @@ const PlanetLabel = styled.div`
   opacity: ${props => props.isActive ? '1' : '0.8'};
   transition: opacity 0.3s ease;
   cursor: pointer;
-`;
-
-const ScrollArrow = styled(Link)`
-  position: absolute;
-  bottom: 5vh;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 2.5rem;
-  color: #fff;
-  cursor: pointer;
-  animation: ${bounce} 3s ease-in-out infinite;
-  z-index: 2;
-  text-decoration: none;
-  transition: color 0.3s ease;
-  text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
-  
-  &:hover {
-    color: #4169E1;
-    text-shadow: 0 0 10px rgba(65, 105, 225, 0.5);
-  }
 `;
 
 function RotatingPlanet({ position, size, color, name, section, onClick, isActive }) {
@@ -528,8 +507,8 @@ function SolarSystem() {
   const planets = [
     { 
       id: 1,
-      name: 'Education',
-      section: 'Cybersecurity Major',
+      name: 'Mercury',
+      section: 'First Planet',
       position: [
         8 * Math.cos(Math.PI * 0.5), 
         0,
@@ -538,14 +517,13 @@ function SolarSystem() {
       orbitRadius: 8,
       size: 1.3,
       color: '#9C27B0',
-      details: 'B.S. in Cybersecurity Defense Strategy/Policy at Grambling State University. Coursework: Data Structures, Cybersecurity Fundamentals, Operating Systems, Networks.',
-      tech: ['Data Structures', 'Operating Systems', 'Networks'],
-      link: '#Contact'
+      details: 'Mercury is the smallest and innermost planet in our solar system. It has no atmosphere and experiences extreme temperature variations, from -180°C to 430°C. A year on Mercury is just 88 Earth days!',
+      tech: ['Smallest Planet', 'No Atmosphere', 'Fastest Orbit']
     },
     { 
       id: 2,
-      name: 'Projects',
-      section: 'Security & Development',
+      name: 'Venus',
+      section: 'Second Planet',
       position: [
         12 * Math.cos(Math.PI * 1.7), 
         0,
@@ -554,13 +532,13 @@ function SolarSystem() {
       orbitRadius: 12,
       size: 1.2,
       color: '#F44336',
-      details: 'Security-focused projects including a vulnerability scanner, productivity tools, and web applications.',
-      tech: ['WVS Scanner', 'Pomodoro Plus', 'Church Website']
+      details: 'Venus is often called Earth\'s "sister planet" due to similar size. It has a thick atmosphere of carbon dioxide and sulfuric acid clouds. Surface temperatures reach 462°C, making it the hottest planet in our solar system!',
+      tech: ['Earth\'s Twin', 'Hottest Planet', 'Acid Rain']
     },
     { 
       id: 3,
-      name: 'Skills',
-      section: 'Technical Expertise',
+      name: 'Earth',
+      section: 'Third Planet',
       position: [
         16 * Math.cos(Math.PI * 0.3), 
         0,
@@ -569,13 +547,13 @@ function SolarSystem() {
       orbitRadius: 16,
       size: 1.1,
       color: '#4CAF50',
-      details: 'Proficient in Python, JavaScript, C/C++, with expertise in security tools, web development, and UI/UX design.',
-      tech: ['Python', 'JavaScript', 'React', 'C/C++']
+      details: 'Earth is the only known planet to harbor life. It\'s covered 71% by water and has a protective atmosphere. The Earth\'s rotation is gradually slowing down, making days slightly longer each year.',
+      tech: ['Blue Planet', 'Only Life', 'Water World']
     },
     {
       id: 4,
-      name: 'Experience',
-      section: 'Professional Journey',
+      name: 'Mars',
+      section: 'Fourth Planet',
       position: [
         20 * Math.cos(Math.PI * 1.2), 
         0,
@@ -584,13 +562,13 @@ function SolarSystem() {
       orbitRadius: 20,
       size: 1.0,
       color: '#2196F3',
-      details: 'Professional experience including Junior Intern at Citizens Bank, Assistant Tutor at MGY Consult, and IT Support at NHIS.',
-      tech: ['Citizens Bank', 'MGY Consult', 'NHIS']
+      details: 'Mars is known as the "Red Planet" due to iron oxide on its surface. It has the largest volcano in the solar system, Olympus Mons, and the deepest canyon, Valles Marineris. Mars has two small moons, Phobos and Deimos.',
+      tech: ['Red Planet', 'Olympus Mons', 'Two Moons']
     },
     {
       id: 5,
-      name: 'Research',
-      section: 'Ongoing Studies',
+      name: 'Jupiter',
+      section: 'Fifth Planet',
       position: [
         24 * Math.cos(Math.PI * 2.2), 
         0,
@@ -599,13 +577,13 @@ function SolarSystem() {
       orbitRadius: 24,
       size: 1.1,
       color: '#673AB7',
-      details: 'Ongoing research on Remote Working and Monitoring Technology, investigating the impact of workplace monitoring on productivity, satisfaction, and well-being.',
-      tech: ['Workplace Monitoring', 'Employee Well-being', 'Ethical Standards']
+      details: 'Jupiter is the largest planet in our solar system. Its Great Red Spot is a storm that has been raging for over 400 years. Jupiter has 79 known moons, including the four large Galilean moons: Io, Europa, Ganymede, and Callisto.',
+      tech: ['Largest Planet', 'Great Red Spot', '79 Moons']
     },
     {
       id: 6,
-      name: 'Contact',
-      section: 'Get in Touch',
+      name: 'Saturn',
+      section: 'Sixth Planet',
       position: [
         28 * Math.cos(Math.PI * 0.8), 
         0,
@@ -614,8 +592,8 @@ function SolarSystem() {
       orbitRadius: 28,
       size: 0.9,
       color: '#FFC107',
-      details: 'Let\'s connect! Find me on GitHub, LinkedIn, or reach out via email at owusuomaribright@gmail.com',
-      tech: ['GitHub', 'LinkedIn', 'Email']
+      details: 'Saturn is famous for its spectacular ring system made of ice particles and rocky debris. It\'s the least dense planet in our solar system - it would float in water! Saturn\'s rings are only about 10 meters thick but span 282,000 kilometers.',
+      tech: ['Ringed Planet', 'Ice Rings', 'Low Density']
     }
   ];
 
@@ -650,16 +628,6 @@ function SolarSystem() {
         <ManualInstruction><span>👆</span>Drag to rotate</ManualInstruction>
         <ManualInstruction><span>🤏</span>Pinch to zoom</ManualInstruction>
       </ManualPanel>
-
-      <ScrollArrow
-        to="about"
-        smooth={true}
-        duration={800}
-        spy={true}
-        offset={-70}
-      >
-        ▼
-      </ScrollArrow>
 
       <CanvasWrapper>
         <Canvas 
