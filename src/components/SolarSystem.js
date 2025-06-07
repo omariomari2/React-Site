@@ -461,13 +461,13 @@ function RotatingSystem({ planets, activePlanet, handlePlanetClick }) {
 
   return (
     <group ref={systemRef}>
-      {/* Core - Cybersecurity Focus */}
+      {/* Core - Sun */}
       <RotatingPlanet
         position={[0, 0, 0]}
         size={3}
-        color="#4169E1"
-        name="Cybersecurity"
-        section="Defense Strategy & Policy"
+        color="#FFD700"
+        name="Sun"
+        section="The Star"
         onClick={() => handlePlanetClick(null)}
         isActive={!activePlanet}
       />
@@ -494,6 +494,106 @@ function RotatingSystem({ planets, activePlanet, handlePlanetClick }) {
         />
       ))}
     </group>
+  );
+}
+
+// Add new space environment components
+function DistantGalaxy({ position, scale = 1, color }) {
+  const galaxyRef = useRef();
+  
+  useFrame((state) => {
+    if (galaxyRef.current) {
+      galaxyRef.current.rotation.z += 0.0002;
+      galaxyRef.current.rotation.y += 0.0001;
+    }
+  });
+
+  return (
+    <mesh ref={galaxyRef} position={position} scale={[scale, scale * 0.1, scale]}>
+      <planeGeometry args={[1, 1, 32, 32]} />
+      <meshBasicMaterial
+        color={color}
+        transparent
+        opacity={0.15}
+        side={THREE.DoubleSide}
+        blending={THREE.AdditiveBlending}
+      />
+    </mesh>
+  );
+}
+
+function SpaceDust({ count = 1000, radius = 300 }) {
+  const points = useMemo(() => {
+    const temp = [];
+    for (let i = 0; i < count; i++) {
+      const theta = Math.random() * Math.PI * 2;
+      const phi = Math.acos(2 * Math.random() - 1);
+      const r = radius * Math.cbrt(Math.random());
+      
+      temp.push(
+        r * Math.sin(phi) * Math.cos(theta),
+        r * Math.sin(phi) * Math.sin(theta),
+        r * Math.cos(phi)
+      );
+    }
+    return new Float32Array(temp);
+  }, [count, radius]);
+
+  return (
+    <points>
+      <bufferGeometry>
+        <bufferAttribute
+          attachObject={['attributes', 'position']}
+          count={points.length / 3}
+          array={points}
+          itemSize={3}
+        />
+      </bufferGeometry>
+      <pointsMaterial
+        size={0.2}
+        color="#FFFFFF"
+        transparent
+        opacity={0.4}
+        sizeAttenuation
+      />
+    </points>
+  );
+}
+
+function CosmicRays({ count = 50 }) {
+  const rays = useMemo(() => {
+    const temp = [];
+    for (let i = 0; i < count; i++) {
+      const angle = Math.random() * Math.PI * 2;
+      const radius = 200 + Math.random() * 100;
+      const height = (Math.random() - 0.5) * 200;
+      temp.push(
+        Math.cos(angle) * radius,
+        height,
+        Math.sin(angle) * radius
+      );
+    }
+    return new Float32Array(temp);
+  }, [count]);
+
+  return (
+    <points>
+      <bufferGeometry>
+        <bufferAttribute
+          attachObject={['attributes', 'position']}
+          count={rays.length / 3}
+          array={rays}
+          itemSize={3}
+        />
+      </bufferGeometry>
+      <pointsMaterial
+        size={0.5}
+        color="#00FFFF"
+        transparent
+        opacity={0.3}
+        sizeAttenuation
+      />
+    </points>
   );
 }
 
@@ -594,13 +694,58 @@ function SolarSystem() {
       color: '#FFC107',
       details: 'Saturn is famous for its spectacular ring system made of ice particles and rocky debris. It\'s the least dense planet in our solar system - it would float in water! Saturn\'s rings are only about 10 meters thick but span 282,000 kilometers.',
       tech: ['Ringed Planet', 'Ice Rings', 'Low Density']
+    },
+    {
+      id: 7,
+      name: 'Uranus',
+      section: 'Seventh Planet',
+      position: [
+        32 * Math.cos(Math.PI * 1.5), 
+        0,
+        32 * Math.sin(Math.PI * 1.5)
+      ],
+      orbitRadius: 32,
+      size: 0.8,
+      color: '#00BCD4',
+      details: 'Uranus is unique as it rotates on its side, with an axial tilt of 98 degrees. It has a pale blue color due to methane in its atmosphere. Uranus has 27 known moons and a system of 13 rings.',
+      tech: ['Sideways Planet', 'Ice Giant', '13 Rings']
+    },
+    {
+      id: 8,
+      name: 'Neptune',
+      section: 'Eighth Planet',
+      position: [
+        36 * Math.cos(Math.PI * 2.5), 
+        0,
+        36 * Math.sin(Math.PI * 2.5)
+      ],
+      orbitRadius: 36,
+      size: 0.8,
+      color: '#3F51B5',
+      details: 'Neptune is the windiest planet in our solar system, with winds reaching up to 2,100 km/h. It has 14 known moons and a system of six rings. Neptune\'s Great Dark Spot is a storm system similar to Jupiter\'s Great Red Spot.',
+      tech: ['Windiest Planet', 'Ice Giant', '14 Moons']
+    },
+    {
+      id: 9,
+      name: 'Pluto',
+      section: 'Dwarf Planet',
+      position: [
+        40 * Math.cos(Math.PI * 0.9), 
+        0,
+        40 * Math.sin(Math.PI * 0.9)
+      ],
+      orbitRadius: 40,
+      size: 0.6,
+      color: '#795548',
+      details: 'Pluto is a dwarf planet in the Kuiper Belt. It has a heart-shaped glacier called Tombaugh Regio and five known moons. Pluto\'s orbit is highly elliptical and tilted compared to the other planets.',
+      tech: ['Dwarf Planet', 'Kuiper Belt', 'Heart Glacier']
     }
   ];
 
   return (
     <SolarSystemContainer>
       <InfoPanel show={activePlanet !== null}>
-        {activePlanet && (
+        {activePlanet ? (
           <>
             <InfoTitle>
               <a 
@@ -619,12 +764,33 @@ function SolarSystem() {
               ))}
             </div>
           </>
+        ) : (
+          <>
+            <InfoTitle>
+              <a 
+                href="#sun" 
+                style={{ color: 'inherit', textDecoration: 'none', transition: 'color 0.3s ease' }}
+                onMouseOver={(e) => e.target.style.color = '#FFD700'}
+                onMouseOut={(e) => e.target.style.color = 'inherit'}
+              >
+                Sun
+              </a>
+            </InfoTitle>
+            <InfoDescription>
+              The Sun is the star at the center of our Solar System. It's a nearly perfect sphere of hot plasma, with internal convective motion that generates a magnetic field. The Sun's diameter is about 1.39 million kilometers, and its mass is about 330,000 times that of Earth.
+            </InfoDescription>
+            <div style={{ marginTop: '10px' }}>
+              <TechTag>Yellow Dwarf</TechTag>
+              <TechTag>4.6 Billion Years Old</TechTag>
+              <TechTag>Surface: 5,500°C</TechTag>
+            </div>
+          </>
         )}
       </InfoPanel>
 
       <ManualPanel>
-        <ManualTitle><span>🚀</span>Manual</ManualTitle>
-        <ManualInstruction><span>🖱️</span>Click planet</ManualInstruction>
+        <ManualTitle><span>🚀</span>Solar System Explorer</ManualTitle>
+        <ManualInstruction><span>🖱️</span>Click celestial body</ManualInstruction>
         <ManualInstruction><span>👆</span>Drag to rotate</ManualInstruction>
         <ManualInstruction><span>🤏</span>Pinch to zoom</ManualInstruction>
       </ManualPanel>
@@ -636,7 +802,7 @@ function SolarSystem() {
           onWheel={(e) => e.stopPropagation()}
         >
           <ambientLight intensity={0.3} />
-          <pointLight position={[0, 0, 0]} intensity={4} color="#4169E1" />
+          <pointLight position={[0, 0, 0]} intensity={4} color="#FFD700" />
           <hemisphereLight intensity={0.3} groundColor="#000066" />
           <fog attach="fog" args={['#000033', 120, 220]} />
           
@@ -659,21 +825,36 @@ function SolarSystem() {
             fade={true}
             speed={0.2}
           />
-          <SpaceDebris count={300} />
           
-          {/* Cybersecurity-themed elements */}
-          <DataStream count={150} />
-          <SecurityGrid size={150} divisions={15} />
+          {/* New space environment elements */}
+          <SpaceDust count={2000} radius={400} />
+          <CosmicRays count={100} />
+          
+          {/* Distant galaxies */}
+          <DistantGalaxy position={[300, 100, -400]} scale={100} color="#FF69B4" />
+          <DistantGalaxy position={[-350, -80, -450]} scale={120} color="#9370DB" />
+          <DistantGalaxy position={[400, -120, -380]} scale={90} color="#20B2AA" />
+          <DistantGalaxy position={[-380, 150, -420]} scale={110} color="#FF7F50" />
           
           {/* Enhanced nebula clouds */}
-          <Nebula position={[50, 20, -80]} color="#4169E1" scale={35} />
-          <Nebula position={[-60, -10, -100]} color="#9C27B0" scale={45} />
-          <Nebula position={[0, -30, -60]} color="#2196F3" scale={30} />
-          <Nebula position={[80, 0, -90]} color="#673AB7" scale={40} />
+          <Nebula position={[120, 40, -150]} color="#4169E1" scale={45} />
+          <Nebula position={[-180, -30, -200]} color="#9C27B0" scale={55} />
+          <Nebula position={[0, -80, -120]} color="#2196F3" scale={40} />
+          <Nebula position={[200, 20, -180]} color="#673AB7" scale={50} />
+          <Nebula position={[-140, 60, -140]} color="#00BCD4" scale={35} />
+          <Nebula position={[160, -40, -220]} color="#3F51B5" scale={45} />
+          <Nebula position={[-220, 10, -160]} color="#E91E63" scale={40} />
+          <Nebula position={[80, -100, -180]} color="#FF9800" scale={30} />
+          <Nebula position={[-100, 80, -240]} color="#4CAF50" scale={50} />
+          <Nebula position={[240, -60, -140]} color="#9C27B0" scale={35} />
+          <Nebula position={[-160, -80, -200]} color="#2196F3" scale={45} />
+          <Nebula position={[180, 100, -160]} color="#FFC107" scale={40} />
 
-          {/* Asteroid belts */}
+          {/* Multiple asteroid belts */}
           <AsteroidBelt radius={28} count={200} />
           <AsteroidBelt radius={32} count={180} />
+          <AsteroidBelt radius={36} count={150} />
+          <AsteroidBelt radius={40} count={120} />
           
           {/* Rotating system with all planets */}
           <RotatingSystem 
