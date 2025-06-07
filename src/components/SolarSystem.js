@@ -303,146 +303,31 @@ function SpaceDebris({ count = 100 }) {
 }
 
 function AsteroidBelt({ innerRadius, outerRadius, count = 500 }) {
-  const beltRef = useRef();
-  
-  // Asteroid belt facts
-  const asteroidFacts = {
-    name: 'Asteroid Belt',
-    section: 'Between Mars & Jupiter',
-    details: 'The asteroid belt contains millions of rocky bodies, ranging in size from tiny dust particles to the dwarf planet Ceres. Despite popular belief, the asteroids are spread over such a large area that a spacecraft can pass through the belt without any risk of collision.',
-    tech: [
-      '4.6 Billion Years Old',
-      'Millions of Asteroids',
-      'Mostly Empty Space',
-      'Ceres: 950km Diameter'
-    ]
-  };
-  
-  // Rotate the entire belt in the opposite direction of the planets
-  useFrame((state) => {
-    if (beltRef.current) {
-      beltRef.current.rotation.y = state.clock.getElapsedTime() * -0.02; // Slow rotation
-    }
-  });
-
-  // Create a more realistic asteroid distribution with varying sizes and rotations
-  const asteroids = useMemo(() => {
+  const debris = useMemo(() => {
     const temp = [];
-    const thickness = 2; // Thickness of the asteroid belt
-    
     for (let i = 0; i < count; i++) {
-      // Position in polar coordinates
-      const angle = Math.random() * Math.PI * 2;
-      const distance = innerRadius + Math.random() * (outerRadius - innerRadius);
-      const spread = (outerRadius - innerRadius) * 0.5; // How much spread from the main orbit
-      const r = distance + (Math.random() - 0.5) * spread;
-      
-      // Random position within the belt
-      const x = Math.cos(angle) * r;
-      const z = Math.sin(angle) * r;
-      const y = (Math.random() - 0.5) * thickness;
-      
-      // Random size and rotation
-      const size = 0.1 + Math.random() * 0.4; // Vary the size
-      const rotation = {
-        x: Math.random() * Math.PI * 2,
-        y: Math.random() * Math.PI * 2,
-        z: Math.random() * Math.PI * 2
-      };
-      
-      // Slightly vary the color
-      const grayValue = 0.4 + Math.random() * 0.4;
-      const color = new THREE.Color(grayValue, grayValue, grayValue);
-      
-      temp.push({ position: [x, y, z], size, rotation, color });
+      const radius = innerRadius + Math.random() * (outerRadius - innerRadius);
+      const theta = Math.random() * Math.PI * 2;
+      const x = Math.cos(theta) * radius;
+      const z = Math.sin(theta) * radius;
+      const y = (Math.random() - 0.5) * 2;
+      temp.push({ position: [x, y, z], size: Math.random() * 0.2 + 0.1 });
     }
     return temp;
   }, [count, innerRadius, outerRadius]);
 
   return (
-    <group ref={beltRef}>
-      {/* Small asteroids */}
-      {Array.from({ length: count }).map((_, i) => {
-        const angle = Math.random() * Math.PI * 2;
-        const distance = innerRadius + Math.random() * (outerRadius - innerRadius);
-        const x = Math.cos(angle) * distance;
-        const z = Math.sin(angle) * distance;
-        const y = (Math.random() - 0.5) * 1.5;
-        const size = 0.1 + Math.random() * 0.3;
-        const isBox = Math.random() > 0.7;
-        
-        return (
-          <mesh
-            key={`small-${i}`}
-            position={[x, y, z]}
-            rotation={[Math.random() * Math.PI, Math.random() * Math.PI, Math.random() * Math.PI]}
-          >
-            {isBox ? (
-              <boxGeometry args={[size, size, size]} />
-            ) : (
-              <dodecahedronGeometry args={[size, 0]} />
-            )}
-            <meshStandardMaterial 
-              color={`hsl(${Math.random() * 60 + 20}, 10%, ${Math.random() * 20 + 40}%)`}
-              roughness={0.8}
-              metalness={0.1}
-            />
-          </mesh>
-        );
-      })}
-      
-      {/* Add some larger, more detailed asteroids */}
-      {Array.from({ length: Math.floor(count / 20) }).map((_, i) => {
-        const angle = (i / (count / 20)) * Math.PI * 2;
-        const distance = innerRadius + (outerRadius - innerRadius) * 0.5;
-        const x = Math.cos(angle) * distance;
-        const z = Math.sin(angle) * distance;
-        const y = (Math.random() - 0.5) * 1.5;
-        const size = 0.5 + Math.random() * 0.8;
-        
-        return (
-          <mesh
-            key={`large-${i}`}
-            position={[x, y, z]}
-            rotation={[Math.random() * Math.PI, Math.random() * Math.PI, Math.random() * Math.PI]}
-          >
-            <dodecahedronGeometry args={[size, 1]} />
-            <meshStandardMaterial 
-              color={`hsl(${Math.random() * 60 + 20}, 15%, ${Math.random() * 15 + 30}%)`}
-              roughness={0.9}
-              metalness={0.1}
-            />
-          </mesh>
-        );
-      })}
-      
-
-      
-      {/* Dust particles for visual effect */}
-      <group ref={beltRef}>
-        {Array.from({ length: count * 1.5 }).map((_, i) => {
-          const angle = (i / (count * 1.5)) * Math.PI * 2;
-          const distance = innerRadius + Math.random() * (outerRadius - innerRadius);
-          const x = Math.cos(angle) * distance;
-          const z = Math.sin(angle) * distance;
-          const y = (Math.random() - 0.5) * 2;
-          const size = 0.05 + Math.random() * 0.1;
-          
-          return (
-            <mesh
-              key={`dust-${i}`}
-              position={[x, y, z]}
-            >
-              <sphereGeometry args={[size, 4, 4]} />
-              <meshBasicMaterial 
-                color={`hsl(0, 0%, ${Math.random() * 30 + 30}%)`}
-                transparent
-                opacity={0.5}
-              />
-            </mesh>
-          );
-        })}
-      </group>
+    <group>
+      {debris.map((item, i) => (
+        <mesh key={i} position={item.position}>
+          <sphereGeometry args={[item.size, 8, 8]} />
+          <meshStandardMaterial
+            color="#8B4513"
+            roughness={0.8}
+            metalness={0.2}
+          />
+        </mesh>
+      ))}
     </group>
   );
 }
@@ -581,6 +466,14 @@ function RotatingSystem({ planets, activePlanet, handlePlanetClick }) {
       setEarthPosition(earth.position);
     }
   }, [planets]);
+
+  // Add default case to switch statement
+  switch (activePlanet) {
+    case 'mercury':
+      // ... existing cases ...
+    default:
+      return null;
+  }
 
   return (
     <group ref={systemRef}>
